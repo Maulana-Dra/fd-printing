@@ -60,6 +60,41 @@ return [
             'report' => false,
         ],
 
+        /**
+         * Cloudflare R2 — penyimpanan utama (S3-compatible).
+         * File publik: thumbnail produk, avatar.
+         * File privat (desain customer): gunakan disk 'designs'.
+         */
+        'r2' => [
+            'driver' => 's3',
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => env('R2_DEFAULT_REGION', 'auto'),
+            'bucket' => env('R2_BUCKET'),
+            'url' => env('R2_URL'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'throw' => true,
+            'report' => false,
+            'visibility' => 'public',
+        ],
+
+        /**
+         * Disk khusus file desain customer — private, akses via signed URL.
+         */
+        'designs' => [
+            'driver' => 's3',
+            'key' => env('R2_ACCESS_KEY_ID'),
+            'secret' => env('R2_SECRET_ACCESS_KEY'),
+            'region' => env('R2_DEFAULT_REGION', 'auto'),
+            'bucket' => env('R2_BUCKET').'-designs',
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'throw' => true,
+            'report' => false,
+            'visibility' => 'private',
+        ],
+
     ],
 
     /*
