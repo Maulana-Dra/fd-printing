@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -80,14 +81,29 @@ class Product extends Model
 
     /**
      * URL thumbnail — kembalikan placeholder jika belum ada gambar.
+     * Fallback ke disk 'public' atau placeholder jika R2 belum dikonfigurasi.
      */
     public function getThumbnailUrlAttribute(): string
     {
-        if ($this->thumbnail) {
-            return \Storage::disk('r2')->url($this->thumbnail);
+        if (! $this->thumbnail) {
+            return 'https://placehold.co/400x400/f97316/ffffff?text=' . urlencode($this->name);
         }
 
-        return 'https://placehold.co/400x400/f97316/ffffff?text=' . urlencode($this->name);
+        // Local dev: coba disk products dulu, fallback ke placeholder
+        if (app()->isLocal() || app()->environment('testing')) {
+            if (Storage::disk('products')->exists($this->thumbnail)) {
+                return Storage::disk('products')->url($this->thumbnail);
+            }
+
+            return 'https://placehold.co/400x400/f97316/ffffff?text=' . urlencode($this->name);
+        }
+
+        // Production: gunakan R2
+        try {
+            return Storage::disk('r2')->url($this->thumbnail);
+        } catch (\Throwable) {
+            return 'https://placehold.co/400x400/f97316/ffffff?text=' . urlencode($this->name);
+        }
     }
 
     /**
