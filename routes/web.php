@@ -11,10 +11,22 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// ── Customer Routes (stub — akan diimplementasikan di langkah selanjutnya) ──
+Route::get('/produk', fn () => view('welcome'))->name('products.index');
+Route::get('/produk/{slug}', fn ($slug) => abort(404))->name('products.show');
+
 Route::middleware('auth')->group(function () {
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Orders (stub)
+    Route::get('/pesanan', fn () => view('dashboard'))->name('orders.index');
+    Route::get('/pesanan/{order}', fn ($order) => abort(404))->name('orders.show');
+
+    // Checkout (stub)
+    Route::get('/checkout', fn () => view('dashboard'))->name('checkout.index');
 });
 
 require __DIR__.'/auth.php';
