@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,9 +9,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-// ── Customer Routes (stub — akan diimplementasikan di langkah selanjutnya) ──
-Route::get('/produk', fn () => view('welcome'))->name('products.index');
-Route::get('/produk/{slug}', fn ($slug) => abort(404))->name('products.show');
+// ── Katalog & Detail Produk ───────────────────────────────────────────────────
+Route::get('/k/{slug?}', [ProductController::class, 'index'])->name('products.index');
+Route::get('/p/{slug}',  [ProductController::class, 'show'])->name('products.show');
 
 Route::middleware('auth')->group(function () {
     // Profile
