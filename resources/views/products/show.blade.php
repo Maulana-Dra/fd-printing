@@ -248,19 +248,40 @@
                     ></textarea>
                 </div>
 
+                {{-- Hidden form untuk submit ke session cart (/cart/add) --}}
+                <form
+                    id="add-to-cart-form"
+                    action="{{ route('cart.add') }}"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    class="hidden"
+                >
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    {{-- Diisi oleh JS sebelum submit --}}
+                    <input type="hidden" name="quantity" x-ref="formQty">
+                    <input type="hidden" name="notes"    x-ref="formNote">
+                </form>
+
                 {{-- Action Buttons --}}
                 <div class="flex gap-3 pt-2">
                     <button
                         type="button"
                         @click="addToCart()"
-                        :disabled="loading"
+                        :disabled="loading || submitting"
                         class="flex-1 btn-primary py-3.5 text-base"
                     >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                        </svg>
-                        Tambah ke Keranjang
+                        <span x-show="!submitting">
+                            <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            Tambah ke Keranjang
+                        </span>
+                        <span x-show="submitting" x-cloak class="flex items-center gap-2 justify-center">
+                            <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            Menambahkan...
+                        </span>
                     </button>
                     <a
                         :href="`https://wa.me/{{ preg_replace('/[^0-9]/', '', config('printing.company.phone')) }}?text=${encodeURIComponent(waMessage())}`"
@@ -314,13 +335,13 @@
             formattedTotal: 'Rp ' + (basePrice * minQty).toLocaleString('id-ID'),
             optionsSummary: '',
             loading: false,
+            submitting: false,
             uploadedFiles: [],
             isDragging: false,
             uploadError: '',
             note: '',
 
             init() {
-                // Set default options per group
                 const grouped = {};
                 options.forEach(opt => {
                     if (!grouped[opt.group_name]) grouped[opt.group_name] = null;
@@ -414,22 +435,52 @@
             },
             removeFile(i) { this.uploadedFiles.splice(i, 1); },
 
-            addToCart() {
-                const opts = {};
-                options.forEach(opt => {
-                    if (this.selectedOptionIds.includes(opt.id)) {
-                        opts[opt.group_name] = opt.option_name;
+            async addToCart() {
+                this.submitting = true;
+                try {
+                    // 1. Build FormData untuk session cart (server-side)
+                    const fd = new FormData();
+                    fd.append('product_id', this.productId);
+                    fd.append('quantity',   this.quantity);
+                    fd.append('notes',      this.note ?? '');
+                    fd.append('_token',     this.csrfToken);
+                    this.selectedOptionIds.forEach(id => fd.append('selected_options[]', id));
+                    // Attach file desain (hanya file pertama yang dikirim)
+                    if (this.uploadedFiles.length > 0) {
+                        fd.append('design_file', this.uploadedFiles[0].file);
                     }
-                });
-                Alpine.store('cart').add({
-                    id: this.productId + '-' + JSON.stringify(this.selectedOptionIds),
-                    name: '{{ $product->name }}',
-                    price: this.unitPrice,
-                    qty: this.quantity,
-                    thumbnail: '{{ $product->thumbnail_url }}',
-                    options: opts,
-                    unit: this.unit,
-                });
+
+                    const res = await fetch('/cart/add', {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': this.csrfToken },
+                        body: fd,
+                    });
+
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                    // 2. Update Alpine store (cart badge + drawer)
+                    const opts = {};
+                    options.forEach(opt => {
+                        if (this.selectedOptionIds.includes(opt.id)) opts[opt.group_name] = opt.option_name;
+                    });
+                    Alpine.store('cart').add({
+                        id: this.productId + '-' + this.selectedOptionIds.join('-'),
+                        name: '{{ $product->name }}',
+                        price: this.unitPrice,
+                        qty: this.quantity,
+                        thumbnail: '{{ $product->thumbnail_url }}',
+                        options: opts,
+                        unit: this.unit,
+                    });
+
+                    // 3. Buka cart drawer
+                    Alpine.store('ui').openCart();
+                } catch (e) {
+                    Alpine.store('toast').show('Gagal menambahkan ke keranjang. Coba lagi.', 'error');
+                    console.error(e);
+                } finally {
+                    this.submitting = false;
+                }
             },
 
             waMessage() {
