@@ -44,7 +44,9 @@ class CartService
         $qty = max($qty, $product->min_qty);
 
         // Buat fingerprint untuk deteksi duplikat (product + opsi yang sama)
-        $fingerprint = $productId . '_' . implode('_', sort($selectedOptionIds) ?: []);
+        $sortedOptions = $selectedOptionIds;
+        sort($sortedOptions);
+        $fingerprint = $productId . '_' . implode('_', $sortedOptions);
 
         $cart = $this->sessionCart();
 

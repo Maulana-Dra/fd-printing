@@ -452,7 +452,11 @@
 
                     const res = await fetch('/cart/add', {
                         method: 'POST',
-                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': this.csrfToken },
+                        headers: { 
+                            'Accept': 'application/json', 
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': this.csrfToken 
+                        },
                         body: fd,
                     });
 
