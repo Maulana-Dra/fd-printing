@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -28,12 +29,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Orders (stub)
-    Route::get('/pesanan', fn () => view('dashboard'))->name('orders.index');
-    Route::get('/pesanan/{order}', fn ($order) => abort(404))->name('orders.show');
+    // Checkout
+    Route::get('/checkout',  [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
-    // Checkout (stub)
-    Route::get('/checkout', fn () => view('dashboard'))->name('checkout.index');
+    // Orders
+    Route::get('/pesanan',              fn () => view('dashboard'))->name('orders.index');
+    Route::get('/pesanan/{order}',      fn ($order) => abort(404))->name('orders.show');
+    Route::get('/pesanan/{order}/bayar', fn ($order) => abort(404))->name('orders.payment');
 });
 
 require __DIR__.'/auth.php';
