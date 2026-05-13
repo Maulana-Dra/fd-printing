@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
+use App\Jobs\SendWhatsAppNotification;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusLog;
@@ -123,6 +124,9 @@ class OrderService
         // 7. Kosongkan cart (di luar transaction agar session clear tidak di-rollback)
         $this->cart->clear();
 
+        // 8. Kirim notifikasi WA ke customer (async, non-blocking)
+        SendWhatsAppNotification::dispatch($order, 'orderConfirmation');
+
         return $order->load('items');
     }
 
@@ -232,15 +236,29 @@ class OrderService
 
     /**
      * Dispatch notifikasi berdasarkan status baru.
-     * Saat ini hanya log — akan diintegrasikan dengan notifikasi email/database
-     * pada langkah berikutnya.
      */
     private function dispatchStatusNotification(Order $order, OrderStatus $newStatus): void
     {
-        // TODO: Langkah 4 — kirim notifikasi email/database sesuai status
-        Log::info('Notification hook triggered', [
+        $type = match ($newStatus) {
+            OrderStatus::PAID       => 'paymentApproved',
+            OrderStatus::SHIPPED    => 'orderShipped',
+            default                 => null,
+        };
+
+        if ($type === null) {
+            return;
+        }
+
+        $extra = [];
+        if ($type === 'orderShipped' && $order->tracking_number) {
+            $extra['trackingNumber'] = $order->tracking_number;
+        }
+
+        SendWhatsAppNotification::dispatch($order, $type, $extra);
+
+        Log::info('WA notification dispatched', [
             'order_number' => $order->order_number,
-            'new_status'   => $newStatus->value,
+            'type'         => $type,
         ]);
     }
 }

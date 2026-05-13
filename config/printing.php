@@ -14,7 +14,7 @@ return [
     'company' => [
         'name'    => env('COMPANY_NAME', 'FD Printing'),
         'tagline' => env('COMPANY_TAGLINE', 'Solusi Cetak Berkualitas untuk Bisnis Anda'),
-        'phone'   => env('COMPANY_PHONE', '081234567890'),
+        'phone'   => env('COMPANY_PHONE', '6288990814593'),
         'email'   => env('COMPANY_EMAIL', 'info@fdprinting.id'),
         'address' => env('COMPANY_ADDRESS', 'Jl. Raya Percetakan No. 1, Jakarta Pusat, DKI Jakarta 10110'),
         'website' => env('APP_URL', 'http://localhost:8000'),
@@ -167,6 +167,22 @@ return [
          * Prefix pesan WA untuk identifikasi brand.
          */
         'message_prefix' => env('WA_MESSAGE_PREFIX', '🖨️ *FD Printing*'),
+
+        /**
+         * Fonnte API endpoint.
+         */
+        'fonnte_url' => 'https://api.fonnte.com/send',
+
+        /**
+         * Token API Fonnte (dari dashboard fonnte.com).
+         */
+        'fonnte_token' => env('FONNTE_TOKEN', ''),
+
+        /**
+         * Nomor WA admin untuk menerima notifikasi order baru.
+         * Format: 628xxx (tanpa + atau 0 di depan).
+         */
+        'admin_number' => env('ADMIN_WA_NUMBER', ''),
     ],
 
 ];

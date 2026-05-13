@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentMethodType;
 use App\Enums\PaymentStatus;
 use App\Http\Requests\PaymentConfirmationRequest;
+use App\Jobs\SendWhatsAppNotification;
 use App\Models\Order;
 use App\Models\PaymentConfirmation;
 use App\Models\PaymentMethod;
@@ -67,6 +68,10 @@ class PaymentController extends Controller
             'notes'             => $request->validated('notes'),
             'status'            => PaymentStatus::PENDING,
         ]);
+
+        // Dispatch WA notifications (async queue — non-blocking)
+        SendWhatsAppNotification::dispatch($order, 'paymentReceived');
+        SendWhatsAppNotification::dispatch($order, 'adminNewPayment');
 
         return redirect()->route('orders.thankyou', $order)
             ->with('success', 'Konfirmasi pembayaran berhasil dikirim! Kami akan segera memverifikasi.');
