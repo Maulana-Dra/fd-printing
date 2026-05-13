@@ -244,7 +244,7 @@
 
               {{-- Submit --}}
               <button type="submit"
-                      class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                      class="w-full bg-primary-600 hover:bg-primary-700 text-gray-700 border border-gray-300 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Kirim Konfirmasi Pembayaran
               </button>

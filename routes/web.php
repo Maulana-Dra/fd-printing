@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
@@ -35,8 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     // Orders & Payment
-    Route::get('/pesanan',                              fn () => view('dashboard'))->name('orders.index');
-    Route::get('/pesanan/{order}',                      fn () => abort(404))->name('orders.show');
+    Route::get('/akun/pesanan',                         [AccountController::class, 'orders'])->name('orders.index');
+    Route::get('/akun/pesanan/{orderNumber}',            [AccountController::class, 'orderDetail'])->name('orders.show');
     Route::get('/pesanan/{order}/bayar',                [PaymentController::class, 'show'])->name('orders.payment');
     Route::post('/pesanan/{order}/bayar/konfirmasi',    [PaymentController::class, 'confirm'])->name('orders.payment.confirm');
     Route::get('/pesanan/{order}/terima-kasih',         [PaymentController::class, 'thankyou'])->name('orders.thankyou');
