@@ -78,6 +78,9 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+                \App\Filament\Widgets\StatsOverviewWidget::class,
+                \App\Filament\Widgets\RecentOrdersWidget::class,
+                \App\Filament\Widgets\PendingPaymentsWidget::class,
             ])
 
             // ── Global Search ─────────────────────────────────────────────────
