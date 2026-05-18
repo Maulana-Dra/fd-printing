@@ -47,9 +47,9 @@ class WhatsAppService
     public function send(string $phone, string $message): bool
     {
         if (! $this->isEnabled()) {
-            Log::debug('WhatsApp notification skipped (disabled)', [
+            Log::channel('whatsapp_logs')->debug('WhatsApp notification skipped (disabled)', [
                 'phone'   => $phone,
-                'message' => substr($message, 0, 80),
+                'preview' => substr($message, 0, 80),
             ]);
             return true; // Anggap sukses agar caller tidak perlu handle
         }
@@ -58,12 +58,12 @@ class WhatsAppService
         $url   = config('printing.whatsapp.fonnte_url', 'https://api.fonnte.com/send');
 
         if (empty($token)) {
-            Log::warning('WhatsApp send skipped: FONNTE_TOKEN belum dikonfigurasi.');
+            Log::channel('whatsapp_logs')->warning('WhatsApp send skipped: FONNTE_TOKEN belum dikonfigurasi.');
             return false;
         }
 
         if (empty($phone)) {
-            Log::warning('WhatsApp send skipped: nomor tujuan kosong.', ['message' => substr($message, 0, 80)]);
+            Log::channel('whatsapp_logs')->warning('WhatsApp send skipped: nomor tujuan kosong.', ['preview' => substr($message, 0, 80)]);
             return false;
         }
 
@@ -79,21 +79,25 @@ class WhatsAppService
             $success = $response->successful() && ($response->json('status') !== false);
 
             if (! $success) {
-                Log::warning('WhatsApp API response not success', [
-                    'phone'  => $phone,
-                    'status' => $response->status(),
-                    'body'   => $response->body(),
+                Log::channel('whatsapp_logs')->warning('WhatsApp API response not success', [
+                    'phone'       => $phone,
+                    'http_status' => $response->status(),
+                    'body'        => substr($response->body(), 0, 300),
                 ]);
             } else {
-                Log::info('WhatsApp sent', ['phone' => $phone]);
+                Log::channel('whatsapp_logs')->info('WhatsApp sent successfully', [
+                    'phone' => $phone,
+                    'chars' => strlen($message),
+                ]);
             }
 
             return $success;
 
         } catch (\Throwable $e) {
-            Log::error('WhatsApp send exception', [
-                'phone' => $phone,
-                'error' => $e->getMessage(),
+            Log::channel('whatsapp_logs')->error('WhatsApp send exception', [
+                'phone'   => $phone,
+                'error'   => $e->getMessage(),
+                'preview' => substr($message, 0, 80),
             ]);
             return false;
         }
@@ -224,7 +228,7 @@ MSG;
     {
         $adminPhone = $this->adminNumber();
         if (! $adminPhone) {
-            Log::warning('WhatsApp admin notification skipped: ADMIN_WA_NUMBER belum dikonfigurasi.');
+            Log::channel('whatsapp_logs')->warning('WhatsApp admin notification skipped: ADMIN_WA_NUMBER belum dikonfigurasi.');
             return;
         }
 

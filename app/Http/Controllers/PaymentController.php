@@ -14,6 +14,7 @@ use App\Services\FileUploadService;
 use App\Services\OrderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class PaymentController extends Controller
@@ -59,7 +60,7 @@ class PaymentController extends Controller
         );
 
         // Simpan konfirmasi pembayaran
-        PaymentConfirmation::create([
+        $confirmation = PaymentConfirmation::create([
             'order_id'          => $order->id,
             'payment_method_id' => $request->validated('payment_method_id'),
             'amount_paid'       => $request->validated('amount_paid'),
@@ -67,6 +68,15 @@ class PaymentController extends Controller
             'proof_image'       => $proofPath,
             'notes'             => $request->validated('notes'),
             'status'            => PaymentStatus::PENDING,
+        ]);
+
+        Log::channel('payment_logs')->info('Payment confirmation submitted', [
+            'order_id'          => $order->id,
+            'order_number'      => $order->order_number,
+            'user_id'           => Auth::id(),
+            'payment_method_id' => $confirmation->payment_method_id,
+            'amount_paid'       => $confirmation->amount_paid,
+            'transfer_date'     => $request->validated('transfer_date'),
         ]);
 
         // Dispatch WA notifications (async queue — non-blocking)

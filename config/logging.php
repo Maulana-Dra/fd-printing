@@ -119,12 +119,50 @@ return [
         ],
 
         'null' => [
-            'driver' => 'monolog',
+            'driver'  => 'monolog',
             'handler' => NullHandler::class,
         ],
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        // ── Domain Channels ───────────────────────────────────────────────────
+
+        /**
+         * order_logs — semua aktivitas order (create, status update, cancel).
+         * Rotasi harian, simpan 90 hari (sesuai kebutuhan audit bisnis).
+         */
+        'order_logs' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/orders/order.log'),
+            'level'  => 'info',
+            'days'   => 90,
+            'replace_placeholders' => true,
+        ],
+
+        /**
+         * payment_logs — semua aktivitas pembayaran (upload bukti, approve, reject).
+         * Rotasi harian, simpan 90 hari.
+         */
+        'payment_logs' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/payments/payment.log'),
+            'level'  => 'info',
+            'days'   => 90,
+            'replace_placeholders' => true,
+        ],
+
+        /**
+         * whatsapp_logs — semua pengiriman WA: sukses, gagal, skip.
+         * Rotasi harian, simpan 30 hari.
+         */
+        'whatsapp_logs' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/whatsapp/wa.log'),
+            'level'  => 'debug',
+            'days'   => 30,
+            'replace_placeholders' => true,
         ],
 
     ],

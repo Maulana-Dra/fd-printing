@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Exceptions\OrderException;
 use App\Filament\Resources\PaymentConfirmationResource\Pages;
 use App\Jobs\SendWhatsAppNotification;
 use App\Models\PaymentConfirmation;
@@ -19,6 +20,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PaymentConfirmationResource extends Resource
 {
@@ -139,17 +141,26 @@ class PaymentConfirmationResource extends Resource
                     )
                     ->modalSubmitActionLabel('Ya, Approve')
                     ->action(function (PaymentConfirmation $record, OrderService $orderService): void {
+                        $adminId = Auth::id();
+
                         // 1. Tandai konfirmasi sebagai approved
                         $record->update([
                             'status'       => PaymentStatus::APPROVED,
-                            'confirmed_by' => Auth::id(),
+                            'confirmed_by' => $adminId,
                             'confirmed_at' => now(),
                         ]);
 
-                        // 2. Transisi order ke PAID → PROCESSING (dua langkah jika perlu)
+                        Log::channel('payment_logs')->info('Payment confirmation approved', [
+                            'confirmation_id'   => $record->id,
+                            'order_id'          => $record->order_id,
+                            'order_number'      => $record->order->order_number,
+                            'amount_paid'       => $record->amount_paid,
+                            'approved_by'       => $adminId,
+                        ]);
+
+                        // 2. Transisi order ke PAID → PROCESSING
                         $order = $record->order;
                         try {
-                            // Jika order masih PENDING_PAYMENT, jadikan PAID dulu
                             if ($order->status === OrderStatus::PENDING_PAYMENT) {
                                 $orderService->updateStatus(
                                     $order,
@@ -159,7 +170,6 @@ class PaymentConfirmationResource extends Resource
                                 );
                             }
 
-                            // Lanjut ke PROCESSING jika bisa
                             $order->refresh();
                             if ($order->status->canTransitionTo(OrderStatus::PROCESSING)) {
                                 $orderService->updateStatus(
@@ -169,9 +179,23 @@ class PaymentConfirmationResource extends Resource
                                     Auth::user(),
                                 );
                             }
+                        } catch (OrderException $e) {
+                            // Error transisi status yang sudah diketahui — log dengan context
+                            Log::channel('payment_logs')->error('Order status transition failed after approve', array_merge(
+                                $e->getContext(),
+                                ['error' => $e->getMessage()]
+                            ));
+                            Notification::make()
+                                ->title('Peringatan')
+                                ->body('Pembayaran disetujui, namun transisi status order gagal: ' . $e->getMessage())
+                                ->warning()
+                                ->send();
                         } catch (\Throwable $e) {
+                            Log::channel('payment_logs')->error('Unexpected error after approve', [
+                                'confirmation_id' => $record->id,
+                                'error'           => $e->getMessage(),
+                            ]);
                             report($e);
-                            // Order status sudah berubah sebelumnya — lanjutkan saja
                         }
 
                         // 3. Kirim WA ke customer (async)
@@ -204,16 +228,26 @@ class PaymentConfirmationResource extends Resource
                     ])
                     ->modalSubmitActionLabel('Tolak Pembayaran')
                     ->action(function (PaymentConfirmation $record, array $data): void {
+                        $adminId = Auth::id();
+
                         // 1. Update status konfirmasi
                         $record->update([
                             'status'           => PaymentStatus::REJECTED,
-                            'confirmed_by'     => Auth::id(),
+                            'confirmed_by'     => $adminId,
                             'confirmed_at'     => now(),
                             'rejection_reason' => $data['rejection_reason'],
                         ]);
 
+                        Log::channel('payment_logs')->warning('Payment confirmation rejected', [
+                            'confirmation_id'  => $record->id,
+                            'order_id'         => $record->order_id,
+                            'order_number'     => $record->order->order_number,
+                            'amount_paid'      => $record->amount_paid,
+                            'rejected_by'      => $adminId,
+                            'reason'           => $data['rejection_reason'],
+                        ]);
+
                         // 2. Notifikasi WA opsional ke customer
-                        // (Pesan standar; untuk alasan custom perlu method baru di WhatsAppService)
                         // SendWhatsAppNotification::dispatch($record->order, 'paymentRejected');
 
                         Notification::make()

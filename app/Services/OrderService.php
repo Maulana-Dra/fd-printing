@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
+use App\Exceptions\OrderStatusException;
 use App\Jobs\SendWhatsAppNotification;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -110,12 +111,13 @@ class OrderService
                 'notes'       => 'Order dibuat oleh customer.',
             ]);
 
-            Log::info('Order created', [
+            Log::channel('order_logs')->info('Order created', [
                 'order_id'     => $order->id,
                 'order_number' => $order->order_number,
                 'user_id'      => $user->id,
                 'total'        => $totalAmount,
-                'items'        => $items->count(),
+                'items_count'  => $items->count(),
+                'delivery'     => $checkoutData['delivery_type'],
             ]);
 
             return $order;
@@ -150,9 +152,13 @@ class OrderService
 
         // Validasi transisi via Enum method
         if (! $currentStatus->canTransitionTo($newStatus)) {
-            throw new \DomainException(
-                "Transisi status dari '{$currentStatus->label()}' ke '{$newStatus->label()}' tidak diizinkan."
+            $ex = OrderStatusException::invalidTransition(
+                $currentStatus->value,
+                $newStatus->value,
+                $order->id,
             );
+            Log::channel('order_logs')->warning('Invalid status transition attempted', $ex->getContext());
+            throw $ex;
         }
 
         DB::transaction(function () use ($order, $currentStatus, $newStatus, $notes, $changedBy) {
@@ -168,12 +174,13 @@ class OrderService
                 'notes'       => $notes,
             ]);
 
-            Log::info('Order status updated', [
+            Log::channel('order_logs')->info('Order status updated', [
                 'order_id'     => $order->id,
                 'order_number' => $order->order_number,
-                'from'         => $currentStatus->value,
-                'to'           => $newStatus->value,
+                'from_status'  => $currentStatus->value,
+                'to_status'    => $newStatus->value,
                 'changed_by'   => $changedBy?->id,
+                'notes'        => $notes,
             ]);
         });
 
@@ -203,7 +210,7 @@ class OrderService
         $disk = app()->isLocal() ? 'designs-local' : 'designs';
 
         if (! Storage::disk($disk)->exists($tempPath)) {
-            Log::warning('Design temp file not found — skipping move', [
+            Log::channel('order_logs')->warning('Design temp file not found — skipping move', [
                 'temp_path' => $tempPath,
                 'order_id'  => $orderId,
             ]);
@@ -216,7 +223,7 @@ class OrderService
         $moved = Storage::disk($disk)->move($tempPath, $finalPath);
 
         if (! $moved) {
-            Log::error('Failed to move design file from temp', [
+            Log::channel('order_logs')->error('Failed to move design file from temp', [
                 'from'     => $tempPath,
                 'to'       => $finalPath,
                 'order_id' => $orderId,
@@ -225,7 +232,7 @@ class OrderService
             return $tempPath;
         }
 
-        Log::info('Design file moved to permanent storage', [
+        Log::channel('order_logs')->info('Design file moved to permanent storage', [
             'order_id' => $orderId,
             'from'     => $tempPath,
             'to'       => $finalPath,
@@ -256,7 +263,7 @@ class OrderService
 
         SendWhatsAppNotification::dispatch($order, $type, $extra);
 
-        Log::info('WA notification dispatched', [
+        Log::channel('order_logs')->info('WA notification dispatched from OrderService', [
             'order_number' => $order->order_number,
             'type'         => $type,
         ]);
