@@ -193,7 +193,8 @@
                                 flex items-center justify-center shadow-md
                                 group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            {!! $iconPath !!}
+                        {{-- strip_tags: hanya izinkan elemen SVG aman (path, circle, rect, polyline, polygon, line) --}}
+                        {!! strip_tags($iconPath, '<path><circle><rect><polyline><polygon><line><ellipse>') !!}
                         </svg>
                     </div>
 
