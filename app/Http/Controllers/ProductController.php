@@ -2,38 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Product;
+use App\Services\CatalogCacheService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private readonly CatalogCacheService $catalog,
+    ) {}
+
     /**
      * Katalog produk — tampil semua atau filter per kategori.
-     *
      * Route: GET /k/{slug?}  → products.index
      */
     public function index(Request $request, ?string $slug = null): View
     {
-        // Semua kategori aktif untuk sidebar/chip filter
-        $categories = Category::active()->sorted()->withCount('activeProducts')->get();
+        // Semua kategori aktif — dari cache (60 menit), dengan withCount('activeProducts')
+        $categories = $this->catalog->allActiveCategories();
 
-        // Resolve kategori aktif (jika ada slug)
+        // Resolve kategori aktif dari cache (60 menit)
         $category = null;
         if ($slug) {
-            $category = Category::active()->where('slug', $slug)->firstOrFail();
+            $category = $this->catalog->categoryBySlug($slug);
+            if (! $category) {
+                abort(404);
+            }
         }
 
-        // Base query
-        $query = Product::active()->with('category');
+        // Base query dengan eager load 'category' (cegah N+1 di table)
+        $query = $this->catalog->productsQuery($category?->id);
 
-        // Filter by category
-        if ($category) {
-            $query->where('category_id', $category->id);
-        }
-
-        // Filter: pencarian teks
+        // Filter: pencarian teks (tidak di-cache)
         if ($search = $request->input('q')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -58,17 +59,17 @@ class ProductController extends Controller
 
     /**
      * Detail produk — konfigurasi spesifikasi, upload desain, tambah ke keranjang.
-     *
      * Route: GET /p/{slug}  → products.show
      */
     public function show(string $slug): View
     {
+        // Eager load 'category' + 'options' — tidak ada N+1
         $product = Product::active()
             ->where('slug', $slug)
             ->with(['category', 'options' => fn ($q) => $q->sorted()])
             ->firstOrFail();
 
-        // Produk serupa dalam kategori yang sama (kecuali produk ini)
+        // Produk serupa (eager load tidak diperlukan, hanya list sederhana)
         $relatedProducts = Product::active()
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)

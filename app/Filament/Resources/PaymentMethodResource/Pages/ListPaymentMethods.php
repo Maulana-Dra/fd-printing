@@ -36,17 +36,17 @@ class ListPaymentMethods extends ListRecords
             'qris' => Tab::make('QRIS')
                 ->badge($counts[PaymentMethodType::QRIS->value] ?? 0)
                 ->badgeColor('primary')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('type', PaymentMethodType::QRIS->value)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', PaymentMethodType::QRIS->value)),
 
             'bank_transfer' => Tab::make('Transfer Bank')
                 ->badge($counts[PaymentMethodType::BANK_TRANSFER->value] ?? 0)
                 ->badgeColor('info')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('type', PaymentMethodType::BANK_TRANSFER->value)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', PaymentMethodType::BANK_TRANSFER->value)),
 
             'ewallet' => Tab::make('e-Wallet')
                 ->badge($counts[PaymentMethodType::EWALLET->value] ?? 0)
                 ->badgeColor('success')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('type', PaymentMethodType::EWALLET->value)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('type', PaymentMethodType::EWALLET->value)),
         ];
     }
 }

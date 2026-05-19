@@ -26,12 +26,12 @@ class ListProducts extends ListRecords
             'active' => Tab::make('Aktif')
                 ->badge(\App\Models\Product::where('is_active', true)->count())
                 ->badgeColor('success')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('is_active', true)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_active', true)),
 
             'inactive' => Tab::make('Non-aktif')
                 ->badge(\App\Models\Product::where('is_active', false)->count())
                 ->badgeColor('warning')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('is_active', false)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_active', false)),
 
             'all' => Tab::make('Semua')
                 ->badge(\App\Models\Product::count()),
@@ -39,7 +39,7 @@ class ListProducts extends ListRecords
             'trashed' => Tab::make('Dihapus')
                 ->badge(\App\Models\Product::onlyTrashed()->count())
                 ->badgeColor('danger')
-                ->modifyQueryUsing(fn (Builder $q) => $q->onlyTrashed()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
         ];
     }
 }

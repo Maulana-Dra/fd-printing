@@ -33,17 +33,17 @@ class ListPaymentConfirmations extends ListRecords
             'pending' => Tab::make('Pending')
                 ->badge($counts[PaymentStatus::PENDING->value] ?? 0)
                 ->badgeColor('danger')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('status', PaymentStatus::PENDING->value)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PaymentStatus::PENDING->value)),
 
             'approved' => Tab::make('Approved')
                 ->badge($counts[PaymentStatus::APPROVED->value] ?? 0)
                 ->badgeColor('success')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('status', PaymentStatus::APPROVED->value)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PaymentStatus::APPROVED->value)),
 
             'rejected' => Tab::make('Rejected')
                 ->badge($counts[PaymentStatus::REJECTED->value] ?? 0)
                 ->badgeColor('gray')
-                ->modifyQueryUsing(fn (Builder $q) => $q->where('status', PaymentStatus::REJECTED->value)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PaymentStatus::REJECTED->value)),
         ];
     }
 }

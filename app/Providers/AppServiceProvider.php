@@ -3,7 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Order;
+use App\Models\Category;
+use App\Models\Product;
+use App\Observers\CategoryObserver;
+use App\Observers\ProductObserver;
 use App\Policies\OrderPolicy;
+use App\Services\CatalogCacheService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -18,7 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Singleton — satu instance CatalogCacheService di seluruh request
+        $this->app->singleton(CatalogCacheService::class);
     }
 
     /**
@@ -26,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // ── Observers ─────────────────────────────────────────────────────────
+        Category::observe(CategoryObserver::class);
+        Product::observe(ProductObserver::class);
+
         // ── Policies ──────────────────────────────────────────────────────────
         Gate::policy(Order::class, OrderPolicy::class);
 

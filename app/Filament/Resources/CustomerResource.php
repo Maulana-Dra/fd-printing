@@ -108,11 +108,11 @@ class CustomerResource extends Resource
             ->filters([
                 Tables\Filters\Filter::make('has_orders')
                     ->label('Pernah Pesan')
-                    ->query(fn (Builder $q) => $q->whereHas('orders')),
+                    ->query(fn (Builder $query) => $query->whereHas('orders')),
 
                 Tables\Filters\Filter::make('registered_this_month')
                     ->label('Daftar Bulan Ini')
-                    ->query(fn (Builder $q) => $q->whereMonth('created_at', now()->month)
+                    ->query(fn (Builder $query) => $query->whereMonth('created_at', now()->month)
                         ->whereYear('created_at', now()->year)),
             ])
 

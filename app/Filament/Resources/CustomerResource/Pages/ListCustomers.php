@@ -34,17 +34,17 @@ class ListCustomers extends ListRecords
             'with_orders' => Tab::make('Pernah Pesan')
                 ->badge($withOrder)
                 ->badgeColor('primary')
-                ->modifyQueryUsing(fn (Builder $q) => $q->whereHas('orders')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('orders')),
 
             'no_orders' => Tab::make('Belum Pesan')
                 ->badge($total - $withOrder)
                 ->badgeColor('gray')
-                ->modifyQueryUsing(fn (Builder $q) => $q->whereDoesntHave('orders')),
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereDoesntHave('orders')),
 
             'new_this_month' => Tab::make('Baru Bulan Ini')
                 ->badge($newMonth)
                 ->badgeColor('success')
-                ->modifyQueryUsing(fn (Builder $q) => $q
+                ->modifyQueryUsing(fn (Builder $query) => $query
                     ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
                 ),

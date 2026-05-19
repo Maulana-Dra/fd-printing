@@ -2,44 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Services\CatalogCacheService;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    public function __construct(
+        private readonly CatalogCacheService $catalog,
+    ) {}
+
     public function index(): View
     {
         /**
-         * Ambil semua kategori aktif beserta produk-produknya.
-         *
-         * Catatan: limit() di dalam with() closure pada Eloquent berlaku secara
-         * global (bukan per kategori). Untuk MVP dengan data kecil, kita fetch
-         * semua lalu slice di view menggunakan ->take(6).
-         * Jika produk sudah ribuan, ganti dengan query UNION atau pakai package
-         * "staudenmeir/eloquent-eager-limit".
+         * Kategori aktif beserta produk-produknya — diambil dari cache (60 menit).
+         * CatalogCacheService::homeCategories() meng-eager-load relasi 'products'
+         * sehingga tidak ada N+1 query di view.
          */
-        $categories = Category::active()
-            ->sorted()
-            ->with([
-                'products' => fn ($q) => $q->active()->sorted(),
-            ])
-            ->get();
+        $categories = $this->catalog->homeCategories();
 
-        /**
-         * Slide hero banner.
-         * Sementara diambil dari array statis — bisa dipindahkan ke tabel
-         * "settings" atau CMS di langkah selanjutnya.
-         */
         $heroSlides = $this->heroSlides();
 
-        /**
-         * Stats singkat untuk social proof di bawah hero.
-         */
         $stats = [
-            ['label' => 'Produk Tersedia', 'value' => '50+'],
-            ['label' => 'Pelanggan Puas',  'value' => '1.200+'],
+            ['label' => 'Produk Tersedia',  'value' => '50+'],
+            ['label' => 'Pelanggan Puas',   'value' => '1.200+'],
             ['label' => 'Tahun Pengalaman', 'value' => '10+'],
-            ['label' => 'Kota Terjangkau', 'value' => '30+'],
+            ['label' => 'Kota Terjangkau',  'value' => '30+'],
         ];
 
         return view('home', compact('categories', 'heroSlides', 'stats'));
