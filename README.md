@@ -1,66 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FD Printing
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi Katalog dan Pemesanan Percetakan (Printing) modern berbasis website yang dibangun menggunakan Laravel 11, Livewire 3, dan Filament v3. Sistem ini memfasilitasi pelanggan untuk menelusuri katalog produk cetak, melakukan pemesanan, serta memfasilitasi pihak admin dalam manajemen produk, kategori, pelanggan, transaksi, dan konfirmasi pembayaran.
 
-## About Laravel
+## ✨ Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🛒 Untuk Pelanggan (Front-End)
+- **Katalog Produk Dinamis**: Penjelajahan produk cetak dengan filter berdasarkan kategori dan pencarian.
+- **Sistem Keranjang (Cart)**: Manajemen pesanan yang mudah sebelum melakukan checkout.
+- **Checkout & Pembayaran**: Mendukung multi-metode pembayaran (Transfer Bank, QRIS, e-Wallet).
+- **Manajemen Akun & Riwayat Pesanan**: Pelanggan dapat memantau status pesanan mereka secara real-time.
+- **Upload Bukti Pembayaran**: Pelanggan dapat mengunggah bukti pembayaran untuk pesanan manual.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🛡️ Untuk Admin (Back-End / Filament Panel)
+- **Dashboard Analitik**: Ringkasan data pesanan, pendapatan, dan statistik pelanggan.
+- **Manajemen Katalog**:
+  - **Kategori**: Tambah, edit, dan kelola ikon/visibilitas kategori produk.
+  - **Produk**: Manajemen detail produk, harga, diskon, opsi kustomisasi (warna, bahan, ukuran), dan multi-gambar S3/Cloudflare R2.
+- **Manajemen Transaksi**:
+  - **Pesanan (Orders)**: Kelola status pesanan dari "Menunggu Pembayaran" hingga "Selesai/Dikirim".
+  - **Konfirmasi Pembayaran**: Verifikasi bukti transfer dan pembayaran dari pelanggan secara manual.
+- **Manajemen Pengguna**: Kelola data pelanggan dan hak akses admin.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Tech Stack
 
-## Learning Laravel
+- **Framework**: [Laravel 11.x](https://laravel.com)
+- **Admin Panel**: [Filament v3](https://filamentphp.com) (TALL Stack: TailwindCSS, Alpine.js, Laravel, Livewire)
+- **Database**: MySQL / MariaDB
+- **File Storage**: Cloudflare R2 / AWS S3 (untuk aset gambar & ikon)
+- **Styling**: Tailwind CSS (Custom front-end)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📋 Persyaratan Sistem
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Pastikan server atau environment lokal Anda memenuhi persyaratan berikut:
+- PHP >= 8.2
+- Composer 2.x
+- Node.js & NPM (untuk compile aset frontend)
+- MySQL >= 8.0 atau MariaDB >= 10.3
+- Extension PHP: `bcmath`, `ctype`, `fileinfo`, `json`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `intl`, `gd`/`imagick`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Instalasi Lokal
 
-## Laravel Sponsors
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di environment lokal Anda:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone repository ini**
+   ```bash
+   git clone https://github.com/username-anda/fd-printing.git
+   cd fd-printing
+   ```
 
-### Premium Partners
+2. **Install dependency PHP**
+   ```bash
+   composer install
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. **Install dependency Node.js & Compile assets**
+   ```bash
+   npm install
+   npm run build
+   ```
 
-## Contributing
+4. **Siapkan konfigurasi Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *Edit file `.env` dan sesuaikan kredensial koneksi Database (`DB_*`), Mail SMTP (`MAIL_*`), dan S3/R2 (`AWS_*`).*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. **Jalankan Migrasi Database dan Seeder**
+   ```bash
+   php artisan migrate --seed
+   ```
+   *(Catatan: Seeder akan membuat akun Admin default dan beberapa data dummy awal jika tersedia)*
 
-## Code of Conduct
+6. **Tautkan Storage**
+   ```bash
+   php artisan storage:link
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7. **Jalankan Development Server**
+   ```bash
+   php artisan serve
+   ```
+   Buka `http://localhost:8000` di browser untuk tampilan pelanggan, dan `http://localhost:8000/admin` untuk akses dashboard Filament Admin.
 
-## Security Vulnerabilities
+## 📁 Struktur Direktori Penting
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `app/Filament/` - Konfigurasi Resource, Page, dan Widget untuk Admin Panel (Filament).
+- `app/Http/Controllers/` - Logika *routing* dan kontroler untuk halaman Front-End pelanggan.
+- `app/Models/` - Definisi Eloquent Model dan relasi antar tabel (Product, Category, Order, User, dll).
+- `resources/views/` - File Blade template untuk tampilan website Front-End.
+- `routes/` - Definisi rute (`web.php` untuk frontend). Rute admin panel dihandle otomatis oleh Filament.
 
-## License
+## 📦 Deployment ke Production
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Untuk panduan, optimasi, dan checklist langkah demi langkah saat merilis aplikasi ini ke environment *Production*, silakan baca referensi terpisah pada file:
+👉 **[DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+## 📄 Lisensi
+
+Proyek ini bersifat tertutup (Proprietary). Penggunaan, distribusi, dan modifikasi tanpa izin eksplisit tidak diperkenankan kecuali ada perjanjian khusus.
