@@ -18,7 +18,7 @@
     <h1 class="text-2xl font-bold text-gray-900 mb-2">Konfirmasi Dikirim!</h1>
     <p class="text-gray-600 mb-8">
       Terima kasih! Konfirmasi pembayaran Anda untuk order
-      <span class="font-bold text-primary-700">{{ $order->order_number }}</span>
+      <span class="font-bold text-orange-700">{{ $order->order_number }}</span>
       sudah kami terima. Tim kami akan memverifikasi dalam <strong>1×24 jam</strong>.
     </p>
 
@@ -35,10 +35,13 @@
           <span class="text-sm text-gray-500">Tanggal Order</span>
           <span class="text-sm font-medium text-gray-800">{{ $order->created_at->translatedFormat('d F Y, H:i') }} WIB</span>
         </div>
+        @php
+          $isWaitingConfirmation = $order->status === \App\Enums\OrderStatus::PENDING_PAYMENT && !$order->needs_payment_confirmation;
+        @endphp
         <div class="flex justify-between items-center">
           <span class="text-sm text-gray-500">Status</span>
-          <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold">
-            {{ $order->status->label() }}
+          <span class="px-3 py-1 {{ $isWaitingConfirmation ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800' }} rounded-full text-xs font-semibold">
+            {{ $isWaitingConfirmation ? 'Menunggu Konfirmasi' : $order->status->label() }}
           </span>
         </div>
         <div class="flex justify-between items-center">
@@ -53,7 +56,7 @@
         @endif
         <div class="border-t border-gray-100 pt-3 flex justify-between items-center">
           <span class="text-sm font-semibold text-gray-700">Total Pembayaran</span>
-          <span class="text-lg font-bold text-primary-700">{{ $order->formatted_total_amount }}</span>
+          <span class="text-lg font-bold text-orange-700">{{ $order->formatted_total_amount }}</span>
         </div>
       </div>
 
@@ -100,7 +103,7 @@
     {{-- CTA Buttons --}}
     <div class="flex flex-col sm:flex-row gap-3 justify-center">
       <a href="{{ route('orders.index') }}"
-         class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2">
+         class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
         Lihat Semua Pesanan
       </a>
@@ -114,7 +117,7 @@
     <p class="text-xs text-gray-400 mt-8">
       Butuh bantuan? Hubungi kami di
       <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', config('printing.company.phone', '')) }}"
-         class="text-primary-600 hover:underline">{{ config('printing.company.phone') }}</a>
+         class="text-orange-600 hover:underline">{{ config('printing.company.phone') }}</a>
     </p>
 
   </div>

@@ -58,6 +58,8 @@
     <div class="space-y-4">
       @foreach($orders as $order)
       @php
+        $isWaitingConfirmation = $order->status === \App\Enums\OrderStatus::PENDING_PAYMENT && !$order->needs_payment_confirmation;
+        
         $statusColors = [
           'pending_payment' => 'bg-amber-100 text-amber-800',
           'paid'            => 'bg-blue-100 text-blue-800',
@@ -67,7 +69,14 @@
           'done'            => 'bg-green-100 text-green-800',
           'cancelled'       => 'bg-red-100 text-red-800',
         ];
-        $badgeClass = $statusColors[$order->status->value] ?? 'bg-gray-100 text-gray-700';
+        
+        if ($isWaitingConfirmation) {
+            $badgeClass = 'bg-blue-100 text-blue-800';
+            $statusLabel = 'Menunggu Konfirmasi';
+        } else {
+            $badgeClass = $statusColors[$order->status->value] ?? 'bg-gray-100 text-gray-700';
+            $statusLabel = $order->status->label();
+        }
       @endphp
       <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
         {{-- Card Header --}}
@@ -75,7 +84,7 @@
           <div class="flex items-center gap-3">
             <span class="font-mono font-bold text-gray-900 text-sm">{{ $order->order_number }}</span>
             <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $badgeClass }}">
-              {{ $order->status->label() }}
+              {{ $statusLabel }}
             </span>
           </div>
           <span class="text-xs text-gray-400">{{ $order->created_at->translatedFormat('d F Y, H:i') }} WIB</span>

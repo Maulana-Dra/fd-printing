@@ -195,7 +195,20 @@ class Order extends Model
      */
     public function getNeedsPaymentConfirmationAttribute(): bool
     {
-        return $this->status === OrderStatus::PENDING_PAYMENT;
+        if ($this->status !== OrderStatus::PENDING_PAYMENT) {
+            return false;
+        }
+
+        // Cek apakah ada konfirmasi pembayaran yang masih pending
+        if ($this->relationLoaded('paymentConfirmations')) {
+            $hasPending = $this->paymentConfirmations->contains(fn ($pc) => $pc->status->value === 'pending');
+        } elseif ($this->relationLoaded('latestPaymentConfirmation')) {
+            $hasPending = $this->latestPaymentConfirmation && $this->latestPaymentConfirmation->status->value === 'pending';
+        } else {
+            $hasPending = $this->paymentConfirmations()->where('status', 'pending')->exists();
+        }
+
+        return ! $hasPending;
     }
 
     /**

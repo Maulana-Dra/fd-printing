@@ -32,8 +32,13 @@ class PaymentController extends Controller
 
         // Order harus masih pending payment
         if ($order->status !== OrderStatus::PENDING_PAYMENT) {
-            return redirect()->route('orders.show', $order)
+            return redirect()->route('orders.show', $order->order_number)
                 ->with('info', 'Order ini sudah tidak memerlukan konfirmasi pembayaran.');
+        }
+
+        if (!$order->needs_payment_confirmation) {
+            return redirect()->route('orders.show', $order->order_number)
+                ->with('info', 'Anda sudah melakukan konfirmasi pembayaran. Silakan tunggu verifikasi admin.');
         }
 
         $paymentMethods = PaymentMethod::active()->sorted()->get()->groupBy(

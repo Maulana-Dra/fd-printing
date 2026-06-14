@@ -19,7 +19,7 @@ class AccountController extends Controller
 
         $query = Order::query()
             ->forUser(Auth::id())
-            ->with(['items'])
+            ->with(['items', 'latestPaymentConfirmation'])
             ->latest();
 
         if ($statusFilter && $status = OrderStatus::tryFrom($statusFilter)) {

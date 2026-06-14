@@ -59,6 +59,7 @@ class ViewPaymentConfirmation extends ViewRecord
 
                     Notification::make()
                         ->title('Pembayaran dikonfirmasi ✅')
+                        ->body("Order {$order->order_number} diubah ke status Diproses.")
                         ->success()->send();
                 })
                 ->visible(fn (): bool => $this->record->is_processable),

@@ -86,21 +86,33 @@ class PendingPaymentsWidget extends BaseWidget
                             'confirmed_at' => now(),
                         ]);
 
-                        // Transisi status order ke PAID
+                        // Transisi status order ke PAID → PROCESSING
                         try {
-                            $orderService->updateStatus(
-                                $record->order,
-                                OrderStatus::PAID,
-                                'Pembayaran dikonfirmasi oleh admin.',
-                                Auth::user(),
-                            );
+                            $order = $record->order;
+                            if ($order->status === OrderStatus::PENDING_PAYMENT) {
+                                $orderService->updateStatus(
+                                    $order,
+                                    OrderStatus::PAID,
+                                    'Pembayaran dikonfirmasi oleh admin.',
+                                    Auth::user(),
+                                );
+                            }
+                            $order->refresh();
+                            if ($order->status->canTransitionTo(OrderStatus::PROCESSING)) {
+                                $orderService->updateStatus(
+                                    $order,
+                                    OrderStatus::PROCESSING,
+                                    'Masuk antrian produksi setelah pembayaran diverifikasi.',
+                                    Auth::user(),
+                                );
+                            }
                         } catch (\Throwable $e) {
                             report($e);
                         }
 
                         Notification::make()
                             ->title('Pembayaran dikonfirmasi')
-                            ->body("Order {$record->order->order_number} telah diubah ke status Sudah Dibayar.")
+                            ->body("Order {$record->order->order_number} telah diubah ke status Diproses.")
                             ->success()
                             ->send();
                     }),

@@ -236,6 +236,7 @@
         </div>
 
         {{-- ── Nav Kategori (Desktop) ── --}}
+        @if (!request()->routeIs('checkout.index') && !request()->routeIs('orders.payment') && !request()->routeIs('orders.show'))
         <nav class="hidden md:flex items-center gap-1 h-11 overflow-x-auto scrollbar-hide border-t border-gray-100">
             <a href="{{ route('products.index') }}"
                 class="nav-link text-xs {{ request()->routeIs('products.index') && !request('category') ? 'active' : '' }}">
@@ -248,6 +249,7 @@
                 </a>
             @endforeach
         </nav>
+        @endif
 
     </div>
 </header>

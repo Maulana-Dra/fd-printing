@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\DeliveryType;
 use App\Enums\OrderStatus;
 use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Resources\PaymentConfirmationResource;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Services\OrderService;
@@ -163,8 +164,25 @@ class OrderResource extends Resource
                             ->rows(2)
                             ->maxLength(500),
                     ])
-                    ->action(function (Order $record, array $data, OrderService $orderService): void {
+                    ->action(function (Order $record, array $data, OrderService $orderService) {
                         $newStatus = OrderStatus::from($data['new_status']);
+
+                        if ($newStatus === OrderStatus::PAID) {
+                            $pendingConfirmation = $record->paymentConfirmations()
+                                ->where('status', \App\Enums\PaymentStatus::PENDING)
+                                ->first();
+
+                            if ($pendingConfirmation) {
+                                Notification::make()
+                                    ->title('Konfirmasi Pembayaran Diperlukan')
+                                    ->body('Ada konfirmasi pembayaran pending untuk order ini. Silakan approve pembayaran terlebih dahulu.')
+                                    ->warning()
+                                    ->send();
+
+                                return redirect()->to(PaymentConfirmationResource::getUrl('view', ['record' => $pendingConfirmation->id]));
+                            }
+                        }
+
                         try {
                             $orderService->updateStatus(
                                 $record,
@@ -253,8 +271,20 @@ class OrderResource extends Resource
                             $newStatus = OrderStatus::from($data['new_status']);
                             $success   = 0;
                             $failed    = 0;
+                            $skippedConfirmations = false;
 
                             foreach ($records as $record) {
+                                if ($newStatus === OrderStatus::PAID) {
+                                    $hasPending = $record->paymentConfirmations()
+                                        ->where('status', \App\Enums\PaymentStatus::PENDING)
+                                        ->exists();
+                                    if ($hasPending) {
+                                        $failed++;
+                                        $skippedConfirmations = true;
+                                        continue;
+                                    }
+                                }
+
                                 try {
                                     $orderService->updateStatus($record, $newStatus, $data['notes'] ?? null, Auth::user());
                                     $success++;
@@ -267,6 +297,14 @@ class OrderResource extends Resource
                                 ->title("Update selesai: {$success} berhasil" . ($failed ? ", {$failed} gagal" : ''))
                                 ->color($failed > 0 ? 'warning' : 'success')
                                 ->send();
+
+                            if ($skippedConfirmations) {
+                                Notification::make()
+                                    ->title('Beberapa Order Dilewati')
+                                    ->body('Beberapa order memiliki konfirmasi pembayaran pending dan harus di-approve dari menu Konfirmasi Pembayaran terlebih dahulu.')
+                                    ->warning()
+                                    ->send();
+                            }
                         })
                         ->deselectRecordsAfterCompletion(),
                 ]),

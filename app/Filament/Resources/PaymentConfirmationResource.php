@@ -280,8 +280,11 @@ class PaymentConfirmationResource extends Resource
                             ->copyable(),
 
                         Infolists\Components\TextEntry::make('order.user.name')
-                            ->label('Customer')
-                            ->description(fn (PaymentConfirmation $r): string => $r->order?->user?->email ?? ''),
+                            ->label('Customer'),
+
+                        Infolists\Components\TextEntry::make('order.user.email')
+                            ->label('Email Customer')
+                            ->copyable(),
 
                         Infolists\Components\TextEntry::make('status')
                             ->label('Status Verifikasi')

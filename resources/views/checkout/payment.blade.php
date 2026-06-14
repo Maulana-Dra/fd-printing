@@ -13,7 +13,7 @@
       </div>
       <div>
         <h1 class="text-xl font-bold text-gray-900">Selesaikan Pembayaran</h1>
-        <p class="text-sm text-gray-500">Order <span class="font-semibold text-primary-700">{{ $order->order_number }}</span></p>
+        <p class="text-sm text-gray-500">Order <span class="font-semibold text-orange-700">{{ $order->order_number }}</span></p>
       </div>
     </div>
 
@@ -40,7 +40,7 @@
             @endif
             <div class="flex justify-between font-bold text-base border-t border-gray-200 pt-2 mt-2">
               <span>Total Pembayaran</span>
-              <span class="text-primary-700">{{ $order->formatted_total_amount }}</span>
+              <span class="text-orange-700">{{ $order->formatted_total_amount }}</span>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
               @if(isset($paymentMethods[$typeKey]) && $paymentMethods[$typeKey]->count() > 0)
               <button @click="activeTab = '{{ $typeKey }}'"
                       :class="activeTab === '{{ $typeKey }}'
-                              ? 'border-b-2 border-primary-600 text-primary-700 bg-primary-50'
+                              ? 'border-b-2 border-orange-600 text-orange-700 bg-orange-50'
                               : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'"
                       class="flex-1 py-3 px-2 text-sm font-medium transition-all duration-200 focus:outline-none">
                 {{ $typeLabel }}
@@ -84,9 +84,9 @@
                 </div>
               @endif
               <p class="text-xs text-gray-500 mt-3">Scan QR Code di atas menggunakan aplikasi mobile banking atau dompet digital apapun</p>
-              <button @click="selectMethod({{ $pm->id }}, 'qris', '{{ $pm->name }}')"
-                      :class="selectedMethodId === {{ $pm->id }} ? 'bg-primary-600 text-white' : 'border border-primary-600 text-primary-700 hover:bg-primary-50'"
-                      class="mt-4 px-6 py-2 rounded-xl text-sm font-semibold transition">
+               <button @click="selectMethod({{ $pm->id }}, 'qris', '{{ $pm->name }}')"
+                       :class="selectedMethodId == {{ $pm->id }} ? 'bg-orange-600 text-white' : 'border border-orange-600 text-orange-700 hover:bg-orange-50'"
+                       class="mt-4 px-6 py-2 rounded-xl text-sm font-semibold transition">
                 Saya Sudah Bayar via QRIS
               </button>
             </div>
@@ -99,18 +99,18 @@
           <div x-show="activeTab === 'bank_transfer'" class="p-5 space-y-3">
             @foreach($paymentMethods['bank_transfer'] as $pm)
             <div class="border rounded-xl p-4 cursor-pointer transition-all duration-200"
-                 :class="selectedMethodId === {{ $pm->id }} ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'"
+                 :class="selectedMethodId == {{ $pm->id }} ? 'border-green-600 bg-green-50/30' : 'border-gray-200 hover:border-green-400 bg-white'"
                  @click="selectMethod({{ $pm->id }}, 'bank_transfer', '{{ $pm->name }}')">
               <div class="flex items-center justify-between">
                 <div>
                   <p class="font-bold text-gray-900 text-sm">{{ $pm->bank_name ?? $pm->name }}</p>
-                  <p class="text-lg font-mono font-bold text-primary-700 mt-1 tracking-wider">{{ $pm->account_number }}</p>
+                  <p class="text-lg font-mono font-bold text-orange-700 mt-1 tracking-wider">{{ $pm->account_number }}</p>
                   <p class="text-sm text-gray-500">a.n. {{ $pm->account_name }}</p>
                 </div>
                 <div class="shrink-0">
-                  <div class="w-6 h-6 rounded-full border-2 transition-all"
-                       :class="selectedMethodId === {{ $pm->id }} ? 'border-primary-500 bg-primary-500' : 'border-gray-300'">
-                    <svg x-show="selectedMethodId === {{ $pm->id }}" class="w-5 h-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                  <div class="w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center"
+                       :class="selectedMethodId == {{ $pm->id }} ? 'border-green-500 bg-green-500' : 'border-gray-300'">
+                    <svg x-show="selectedMethodId == {{ $pm->id }}" class="w-4 h-4 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                   </div>
                 </div>
               </div>
@@ -120,7 +120,7 @@
             </div>
             @endforeach
             <p class="text-xs text-amber-700 bg-amber-50 rounded-xl p-3 flex gap-2">
-              <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+              <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92z" clip-rule="evenodd"/></svg>
               Pastikan transfer tepat sejumlah <strong>{{ $order->formatted_total_amount }}</strong> agar pembayaran lebih cepat diverifikasi.
             </p>
           </div>
@@ -131,17 +131,17 @@
           <div x-show="activeTab === 'ewallet'" class="p-5 space-y-3">
             @foreach($paymentMethods['ewallet'] as $pm)
             <div class="border rounded-xl p-4 cursor-pointer transition-all duration-200"
-                 :class="selectedMethodId === {{ $pm->id }} ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'"
+                 :class="selectedMethodId == {{ $pm->id }} ? 'border-green-600 bg-green-50/30' : 'border-gray-200 hover:border-green-400 bg-white'"
                  @click="selectMethod({{ $pm->id }}, 'ewallet', '{{ $pm->name }}')">
               <div class="flex items-center justify-between">
                 <div>
                   <p class="font-bold text-gray-900 text-sm">{{ $pm->name }}</p>
-                  <p class="text-base font-mono font-semibold text-primary-700 mt-0.5">{{ $pm->account_number }}</p>
+                  <p class="text-base font-mono font-semibold text-orange-700 mt-0.5">{{ $pm->account_number }}</p>
                   <p class="text-sm text-gray-500">a.n. {{ $pm->account_name }}</p>
                 </div>
-                <div class="w-6 h-6 rounded-full border-2 transition-all"
-                     :class="selectedMethodId === {{ $pm->id }} ? 'border-primary-500 bg-primary-500' : 'border-gray-300'">
-                  <svg x-show="selectedMethodId === {{ $pm->id }}" class="w-5 h-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <div class="w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center"
+                     :class="selectedMethodId == {{ $pm->id }} ? 'border-green-500 bg-green-500' : 'border-gray-300'">
+                  <svg x-show="selectedMethodId == {{ $pm->id }}" class="w-4 h-4 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                 </div>
               </div>
             </div>
@@ -151,7 +151,7 @@
         </div>
 
         {{-- Confirmation Form --}}
-        <div x-show="selectedMethodId !== null" x-transition
+        <div id="payment-form" x-show="selectedMethodId !== null" x-transition
              class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h2 class="text-base font-bold text-gray-900 mb-5">
             Upload Bukti Pembayaran
@@ -185,8 +185,8 @@
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-medium">Rp</span>
                   <input type="number" name="amount_paid" required
                          value="{{ old('amount_paid', (int) $order->total_amount) }}"
-                         min="1" step="100"
-                         class="w-full border border-gray-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 @error('amount_paid') border-red-400 @enderror">
+                         min="1" step="1"
+                         class="w-full border border-gray-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 @error('amount_paid') border-red-400 @enderror">
                 </div>
               </div>
 
@@ -198,7 +198,7 @@
                 <input type="date" name="transfer_date" required
                        value="{{ old('transfer_date', date('Y-m-d')) }}"
                        max="{{ date('Y-m-d') }}"
-                       class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 @error('transfer_date') border-red-400 @enderror">
+                       class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 @error('transfer_date') border-red-400 @enderror">
               </div>
 
               {{-- Upload Bukti --}}
@@ -207,7 +207,7 @@
                   Foto Bukti Pembayaran <span class="text-red-500">*</span>
                 </label>
                 <div class="border-2 border-dashed rounded-xl p-5 text-center transition-all duration-200 cursor-pointer"
-                     :class="isDragging ? 'border-primary-500 bg-primary-50' : 'border-gray-300 hover:border-primary-400 bg-gray-50'"
+                     :class="isDragging ? 'border-orange-500 bg-orange-50/40' : 'border-gray-300 hover:border-orange-400 bg-gray-50'"
                      @dragover.prevent="isDragging = true"
                      @dragleave="isDragging = false"
                      @drop.prevent="handleDrop($event)"
@@ -239,12 +239,21 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Catatan (Opsional)</label>
                 <textarea name="notes" rows="2" maxlength="500"
                           placeholder="Contoh: Transfer dari BCA ke BCA, nama pengirim: Andi"
-                          class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none">{{ old('notes') }}</textarea>
+                          class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 resize-none">{{ old('notes') }}</textarea>
+                <div class="mt-2 text-xs text-blue-700 bg-blue-50/70 border border-blue-100 rounded-xl p-3 flex items-start gap-2.5">
+                  <svg class="w-4 h-4 text-blue-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+                  </svg>
+                  <div>
+                    <span class="font-bold block mb-0.5 text-blue-800">Contoh pengisian catatan:</span>
+                    <span class="text-blue-600">"Transfer dari BCA ke BCA, nama pengirim: Andi Wijaya" atau "Bayar via GoPay a.n. Citra". Catatan ini memudahkan tim kami memverifikasi pembayaran Anda.</span>
+                  </div>
+                </div>
               </div>
 
               {{-- Submit --}}
               <button type="submit"
-                      class="w-full bg-primary-600 hover:bg-primary-700 text-gray-700 border border-gray-300 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                      class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Kirim Konfirmasi Pembayaran
               </button>
@@ -288,7 +297,7 @@
             @endif
             <div class="border-t border-gray-100 pt-2 flex justify-between font-bold">
               <span>Total</span>
-              <span class="text-primary-700">{{ $order->formatted_total_amount }}</span>
+              <span class="text-orange-700">{{ $order->formatted_total_amount }}</span>
             </div>
           </div>
 
@@ -324,7 +333,7 @@ function paymentPage() {
             this.selectedMethodName = name;
             this.activeTab = type;
             this.$nextTick(() => {
-                document.querySelector('[x-show="selectedMethodId !== null"]')
+                document.getElementById('payment-form')
                     ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         },

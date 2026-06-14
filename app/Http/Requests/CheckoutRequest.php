@@ -51,16 +51,14 @@ class CheckoutRequest extends FormRequest
                 'nullable', 'string', 'max:10',
             ],
 
-            // ── Step 2b: Kurir & Ongkir (wajib jika delivery) ────────────────
+            // ── Step 2b: Kurir & Ongkir (diatur manual / COD) ──────────────────
             'courier' => [
-                Rule::requiredIf($isDelivery),
                 'nullable', 'string', 'max:50',
             ],
             'courier_service' => [
                 'nullable', 'string', 'max:100',
             ],
             'shipping_cost' => [
-                Rule::requiredIf($isDelivery),
                 'nullable', 'numeric', 'min:0',
             ],
 
