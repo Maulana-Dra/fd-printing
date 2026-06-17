@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="title">{{ $product->name }}</x-slot>
-    <x-slot name="description">{{ Str::limit($product->description, 160) }}</x-slot>
+    <x-slot name="description">{{ Str::limit(strip_tags($product->description), 160) }}</x-slot>
 
     <div class="container-app py-6 md:py-8">
 
@@ -65,7 +65,9 @@
                     <span class="badge-primary text-xs mb-2 inline-block">{{ $product->category->name }}</span>
                     <h1 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight">{{ $product->name }}</h1>
                     @if($product->description)
-                        <p class="text-gray-500 text-sm mt-2 leading-relaxed">{{ $product->description }}</p>
+                        <div class="text-gray-500 text-sm mt-2 leading-relaxed prose prose-sm max-w-none">
+                            {!! $product->description !!}
+                        </div>
                     @endif
                 </div>
 
@@ -460,22 +462,11 @@
                         body: fd,
                     });
 
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
 
                     // 2. Update Alpine store (cart badge + drawer)
-                    const opts = {};
-                    options.forEach(opt => {
-                        if (this.selectedOptionIds.includes(opt.id)) opts[opt.group_name] = opt.option_name;
-                    });
-                    Alpine.store('cart').add({
-                        id: this.productId + '-' + this.selectedOptionIds.join('-'),
-                        name: '{{ $product->name }}',
-                        price: this.unitPrice,
-                        qty: this.quantity,
-                        thumbnail: '{{ $product->thumbnail_url }}',
-                        options: opts,
-                        unit: this.unit,
-                    });
+                    Alpine.store('cart').items = data.items || [];
+                    Alpine.store('toast').show(data.message || 'Produk berhasil ditambahkan ke keranjang.', 'success');
 
                     // 3. Buka cart drawer
                     Alpine.store('ui').openCart();

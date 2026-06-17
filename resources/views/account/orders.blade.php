@@ -10,24 +10,26 @@
         <h1 class="text-2xl font-bold text-gray-900">Pesanan Saya</h1>
         <p class="text-sm text-gray-500 mt-0.5">Pantau status dan riwayat semua pesanan Anda</p>
       </div>
-      <a href="{{ route('products.index') }}"
-         class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Pesan Lagi
-      </a>
+      <div class="flex items-center gap-2">
+        <a href="{{ route('products.index') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white text-sm font-semibold rounded-xl hover:bg-orange-700 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Pesan Lagi
+        </a>
+      </div>
     </div>
 
     {{-- ── Status Filter Tabs ── --}}
     <div class="mb-5 flex flex-wrap gap-2">
       <a href="{{ route('orders.index') }}"
          class="px-4 py-1.5 rounded-full text-sm font-medium transition border
-                {{ !$statusFilter ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400' }}">
+                {{ !$statusFilter ? 'bg-orange-600 text-white border-orange-600' : 'bg-white text-gray-600 border-gray-300 hover:border-orange-500 hover:text-orange-600' }}">
         Semua
       </a>
       @foreach($statuses as $status)
       <a href="{{ route('orders.index', ['status' => $status->value]) }}"
          class="px-4 py-1.5 rounded-full text-sm font-medium transition border
-                {{ $statusFilter === $status->value ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-gray-600 border-gray-300 hover:border-primary-400' }}">
+                {{ $statusFilter === $status->value ? 'bg-orange-600 text-white border-orange-600' : 'bg-white text-gray-600 border-gray-300 hover:border-orange-500 hover:text-orange-600' }}">
         {{ $status->label() }}
       </a>
       @endforeach
@@ -47,7 +49,7 @@
       </p>
       @if(!$statusFilter)
       <a href="{{ route('products.index') }}"
-         class="mt-4 inline-block px-6 py-2 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition">
+         class="mt-4 inline-block px-6 py-2 bg-orange-600 text-white text-sm font-semibold rounded-xl hover:bg-orange-700 transition">
         Mulai Belanja
       </a>
       @endif
@@ -112,7 +114,7 @@
             {{-- Total --}}
             <div class="text-right shrink-0">
               <p class="text-xs text-gray-400 mb-0.5">Total</p>
-              <p class="text-base font-bold text-primary-700">{{ $order->formatted_total_amount }}</p>
+              <p class="text-base font-bold text-orange-600">{{ $order->formatted_total_amount }}</p>
             </div>
           </div>
 

@@ -1,20 +1,33 @@
 {{-- Footer --}}
 <footer class="hidden md:block bg-gray-900 text-gray-300 mt-16">
 
+    {{-- ── Kategori Footer Section ── --}}
+    <div class="border-b border-gray-800/80 bg-gray-950/10">
+        <div class="container-app py-5">
+            <div class="flex flex-col gap-3">
+                <span class="text-white font-bold text-xs uppercase tracking-wider">Kategori Produk</span>
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-400">
+                    @foreach(\App\Models\Category::active()->sorted()->take(6)->get() as $cat)
+                        <a href="{{ route('products.index', $cat->slug) }}"
+                            class="px-3.5 py-1.5 border border-transparent rounded-full hover:bg-gray-800/40 hover:border-gray-700/30 text-gray-400 hover:text-orange-400 transition-all duration-150 font-medium">
+                            {{ $cat->name }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Main Footer --}}
     <div class="container-app py-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
             {{-- Kolom 1: Company Info --}}
-            <div class="lg:col-span-1">
-                <div class="flex items-center gap-2.5 mb-4">
-                    <div class="w-9 h-9 rounded-xl gradient-orange flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                        </svg>
-                    </div>
-                    <span class="text-white font-bold text-lg">{{ config('printing.company.name') }}</span>
+            <div>
+                <div class="flex items-center mb-4">
+                    <img src="{{ asset('assets/iconGambar.jpeg') }}" 
+                         alt="{{ config('printing.company.name') }} Logo" 
+                         class="h-12 w-auto object-contain">
                 </div>
                 <p class="text-sm text-gray-400 leading-relaxed mb-4">
                     {{ config('printing.company.tagline') }}
@@ -46,29 +59,13 @@
                 </div>
             </div>
 
-            {{-- Kolom 2: Kategori --}}
-            <div>
-                <h3 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Kategori Produk</h3>
-                <ul class="space-y-2.5 text-sm">
-                    @foreach(\App\Models\Category::active()->sorted()->get() as $cat)
-                        <li>
-                            <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
-                                class="text-gray-400 hover:text-orange-400 transition-colors flex items-center gap-2">
-                                <span class="w-1 h-1 rounded-full bg-orange-500 flex-shrink-0"></span>
-                                {{ $cat->name }}
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            {{-- Kolom 3: Metode Pembayaran --}}
+            {{-- Kolom 2: Metode Pembayaran --}}
             <div>
                 <h3 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Metode Pembayaran</h3>
                 <div class="space-y-2.5 text-sm">
                     @foreach(\App\Models\PaymentMethod::active()->sorted()->get() as $pm)
                         <div class="flex items-center gap-2">
-                            <span class="w-1 h-1 rounded-full bg-orange-500 flex-shrink-0"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
                             <span class="text-gray-400">{{ $pm->name }}</span>
                         </div>
                     @endforeach
@@ -77,35 +74,35 @@
                 <h3 class="text-white font-semibold mb-4 mt-6 text-sm uppercase tracking-wider">Pengiriman</h3>
                 <div class="space-y-2.5 text-sm text-gray-400">
                     <div class="flex items-center gap-2">
-                        <span class="w-1 h-1 rounded-full bg-orange-500 flex-shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
                         JNE, Sicepat, Anteraja
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="w-1 h-1 rounded-full bg-orange-500 flex-shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
                         Ambil di toko (Pickup)
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="w-1 h-1 rounded-full bg-orange-500 flex-shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
                         Same-day delivery (area tertentu)
                     </div>
                 </div>
             </div>
 
-            {{-- Kolom 4: Layanan & Info --}}
+            {{-- Kolom 3: Layanan & Info --}}
             <div>
                 <h3 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Layanan</h3>
                 <ul class="space-y-2.5 text-sm">
                     @foreach([
-                        ['label' => 'Cara Pemesanan', 'route' => '#'],
-                        ['label' => 'Panduan Upload Desain', 'route' => '#'],
+                        ['label' => 'Cara Pemesanan', 'route' => route('pages.how-to-order')],
+                        ['label' => 'Panduan Upload Desain', 'route' => route('pages.design-guide')],
                         ['label' => 'Cek Status Pesanan', 'route' => route('orders.index')],
-                        ['label' => 'Hubungi Kami', 'route' => '#'],
-                        ['label' => 'Kebijakan Privasi', 'route' => '#'],
-                        ['label' => 'Syarat & Ketentuan', 'route' => '#'],
+                        ['label' => 'Hubungi Kami', 'route' => route('pages.contact')],
+                        ['label' => 'Kebijakan Privasi', 'route' => route('pages.privacy')],
+                        ['label' => 'Syarat & Ketentuan', 'route' => route('pages.terms')],
                     ] as $link)
                         <li>
                             <a href="{{ $link['route'] }}" class="text-gray-400 hover:text-orange-400 transition-colors flex items-center gap-2">
-                                <span class="w-1 h-1 rounded-full bg-orange-500 flex-shrink-0"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
                                 {{ $link['label'] }}
                             </a>
                         </li>

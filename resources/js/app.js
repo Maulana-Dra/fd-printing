@@ -11,15 +11,14 @@ Alpine.plugin(collapse);
 
 // ── Alpine Store: Cart ────────────────────────────────────────────────────
 Alpine.store('cart', {
-    /** Array item: { id, name, price, qty, thumbnail, options } */
-    items: JSON.parse(localStorage.getItem('fd_cart') ?? '[]'),
+    items: [],
 
     get count() {
-        return this.items.reduce((sum, item) => sum + item.qty, 0);
+        return this.items.length;
     },
 
     get subtotal() {
-        return this.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        return this.items.reduce((sum, item) => sum + ((parseFloat(item.unit_price) || 0) * (parseInt(item.quantity) || 0)), 0);
     },
 
     get formattedSubtotal() {
@@ -27,37 +26,70 @@ Alpine.store('cart', {
     },
 
     add(product) {
-        const existing = this.items.find(i => i.id === product.id && JSON.stringify(i.options) === JSON.stringify(product.options));
+        const existing = this.items.find(i => i.product_id === product.product_id && JSON.stringify(i.selected_options) === JSON.stringify(product.selected_options));
         if (existing) {
-            existing.qty += product.qty ?? 1;
+            existing.quantity = (parseInt(existing.quantity) || 0) + (parseInt(product.quantity) || 1);
         } else {
-            this.items.push({ ...product, qty: product.qty ?? 1 });
+            this.items.push(product);
         }
-        this._persist();
-        this._toast(`${product.name} ditambahkan ke keranjang`);
+        this._toast(`${product.product_name || product.name} ditambahkan ke keranjang`);
     },
 
-    remove(index) {
-        this.items.splice(index, 1);
-        this._persist();
+    async remove(itemId) {
+        try {
+            const res = await fetch(`/cart/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-HTTP-Method-Override': 'DELETE',
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                this.items = data.items || [];
+                // If we are on the cart page, reload to sync the page view
+                if (window.location.pathname === '/cart') {
+                    window.location.reload();
+                }
+            }
+        } catch (e) {
+            console.error('Failed to remove item:', e);
+        }
     },
 
-    updateQty(index, qty) {
+    async updateQty(itemId, qty) {
         if (qty < 1) {
-            this.remove(index);
+            await this.remove(itemId);
             return;
         }
-        this.items[index].qty = qty;
-        this._persist();
+        try {
+            const res = await fetch(`/cart/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-HTTP-Method-Override': 'PATCH',
+                },
+                body: JSON.stringify({ quantity: qty })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                this.items = data.items || [];
+                // If we are on the cart page, reload to sync the page view
+                if (window.location.pathname === '/cart') {
+                    window.location.reload();
+                }
+            }
+        } catch (e) {
+            console.error('Failed to update qty:', e);
+        }
     },
 
     clear() {
         this.items = [];
-        this._persist();
-    },
-
-    _persist() {
-        localStorage.setItem('fd_cart', JSON.stringify(this.items));
     },
 
     _toast(message) {

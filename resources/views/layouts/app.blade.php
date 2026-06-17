@@ -127,6 +127,16 @@
         </div>
     </nav>
 
+    {{-- Sync Alpine Cart Store dengan Laravel Session Cart --}}
+    <script>
+        document.addEventListener('alpine:init', () => {
+            // Bersihkan data local storage lama dari versi sebelumnya
+            localStorage.removeItem('fd_cart');
+            
+            Alpine.store('cart').items = @json(app(App\Services\CartService::class)->getItems()->values());
+        });
+    </script>
+
     {{-- Stack untuk scripts tambahan per halaman --}}
     @stack('scripts')
 

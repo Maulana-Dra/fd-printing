@@ -152,7 +152,7 @@ class CartService
      */
     public function count(): int
     {
-        return (int) $this->getItems()->sum('quantity');
+        return $this->getItems()->count();
     }
 
     /**

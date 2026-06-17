@@ -53,6 +53,7 @@ class CartController extends Controller
                 'message' => 'Produk berhasil ditambahkan ke keranjang.',
                 'count'   => $this->cart->count(),
                 'total'   => $this->cart->getTotal(),
+                'items'   => $this->cart->getItems()->values(),
             ]);
         }
 

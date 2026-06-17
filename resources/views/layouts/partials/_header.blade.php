@@ -15,23 +15,17 @@
         <div class="flex items-center gap-3 h-16">
 
             {{-- Logo --}}
-            <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center gap-2.5 tap-highlight">
-                <div class="w-9 h-9 rounded-xl gradient-orange flex items-center justify-center shadow-sm">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                    </svg>
-                </div>
-                <span class="hidden sm:block text-lg font-bold text-gray-900 leading-tight">
-                    {{ config('printing.company.name', 'FD Printing') }}
-                </span>
+            <a href="{{ url('/') }}" class="flex-shrink-0 flex items-center tap-highlight">
+                <img src="{{ asset('assets/iconGambar.jpeg') }}" 
+                     alt="{{ config('printing.company.name', 'FD Printing') }} Logo" 
+                     class="h-11 w-auto object-contain">
             </a>
 
             {{-- Search Bar (Desktop) --}}
             <form action="{{ route('products.index') }}" method="GET"
                 class="hidden md:flex flex-1 max-w-xl mx-auto">
                 <div class="search-bar w-full">
-                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-gray-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -236,15 +230,15 @@
         </div>
 
         {{-- ── Nav Kategori (Desktop) ── --}}
-        @if (!request()->routeIs('checkout.index') && !request()->routeIs('orders.payment') && !request()->routeIs('orders.show'))
+        @if (!request()->routeIs('checkout.index') && !request()->routeIs('orders.*') && !request()->routeIs('pages.*'))
         <nav class="hidden md:flex items-center gap-1 h-11 overflow-x-auto scrollbar-hide border-t border-gray-100">
             <a href="{{ route('products.index') }}"
-                class="nav-link text-xs {{ request()->routeIs('products.index') && !request('category') ? 'active' : '' }}">
+                class="nav-link text-xs {{ request()->routeIs('products.index') && !request()->route('slug') ? 'active' : '' }}">
                 Semua Produk
             </a>
             @foreach(\App\Models\Category::active()->sorted()->get() as $cat)
-                <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
-                    class="nav-link text-xs whitespace-nowrap {{ request('category') === $cat->slug ? 'active' : '' }}">
+                <a href="{{ route('products.index', $cat->slug) }}"
+                    class="nav-link text-xs whitespace-nowrap {{ request()->route('slug') === $cat->slug ? 'active' : '' }}">
                     {{ $cat->name }}
                 </a>
             @endforeach
@@ -279,14 +273,10 @@
 
         {{-- Header Sidebar --}}
         <div class="flex items-center justify-between p-5 border-b border-gray-100">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-xl gradient-orange flex items-center justify-center">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                    </svg>
-                </div>
-                <span class="font-bold text-gray-900">{{ config('printing.company.name') }}</span>
+            <div class="flex items-center">
+                <img src="{{ asset('assets/iconGambar.jpeg') }}" 
+                     alt="{{ config('printing.company.name') }} Logo" 
+                     class="h-9 w-auto object-contain">
             </div>
             <button @click="$store.ui.closeMobileMenu()" class="p-2 rounded-lg hover:bg-gray-100">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -308,16 +298,16 @@
                     Semua Produk
                 </a>
                 @foreach(\App\Models\Category::active()->sorted()->get() as $cat)
-                    <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                    <a href="{{ route('products.index', $cat->slug) }}"
                         @click="$store.ui.closeMobileMenu()"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
                         <span class="w-4 h-4 flex items-center justify-center text-gray-400">
                             @switch($cat->icon)
-                                @case('heroicon-o-star') ⭐ @break
-                                @case('heroicon-o-printer') 🖨️ @break
-                                @case('heroicon-o-megaphone') 📢 @break
-                                @case('heroicon-o-shopping-bag') 👕 @break
-                                @case('heroicon-o-gift') 🎁 @break
+                                @case('heroicon-o-star') @break
+                                @case('heroicon-o-printer') @break
+                                @case('heroicon-o-megaphone') @break
+                                @case('heroicon-o-shopping-bag') @break
+                                @case('heroicon-o-gift') @break
                                 @default ▸
                             @endswitch
                         </span>

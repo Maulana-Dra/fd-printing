@@ -14,9 +14,9 @@ return [
     'company' => [
         'name'    => env('COMPANY_NAME', 'FD Printing'),
         'tagline' => env('COMPANY_TAGLINE', 'Solusi Cetak Berkualitas untuk Bisnis Anda'),
-        'phone'   => env('COMPANY_PHONE', '6288990814593'),
+        'phone'   => env('COMPANY_PHONE', '628113298877'),
         'email'   => env('COMPANY_EMAIL', 'info@fdprinting.id'),
-        'address' => env('COMPANY_ADDRESS', 'Jl. Raya Percetakan No. 1, Jakarta Pusat, DKI Jakarta 10110'),
+        'address' => env('COMPANY_ADDRESS', 'Jl. Raya Wadung Asri No.42, Wadungasri, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256'),
         'website' => env('APP_URL', 'http://localhost:8000'),
     ],
 

@@ -37,7 +37,6 @@ class ProductResource extends Resource
         return $form->schema([
             // ── Kolom Kiri: Info Produk ──────────────────────────────────────
             Forms\Components\Group::make()->schema([
-
                 Forms\Components\Section::make('Informasi Produk')
                     ->icon('heroicon-o-tag')
                     ->schema([
@@ -58,8 +57,10 @@ class ProductResource extends Resource
                             ->required()
                             ->maxLength(150)
                             ->unique(Product::class, 'slug', ignoreRecord: true)
-                            ->helperText('Otomatis dari nama produk. Bisa diubah manual.')
-                            ->prefix('p/'),
+                            ->helperText('Otomatis dari nama produk (Hanya Baca).')
+                            ->prefix('p/')
+                            ->disabled()
+                            ->dehydrated(),
 
                         Forms\Components\Select::make('category_id')
                             ->label('Kategori')
@@ -75,7 +76,9 @@ class ProductResource extends Resource
                                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state ?? ''))),
                                 Forms\Components\TextInput::make('slug')
                                     ->label('Slug')
-                                    ->required(),
+                                    ->required()
+                                    ->disabled()
+                                    ->dehydrated(),
                             ]),
 
                         Forms\Components\RichEditor::make('description')
@@ -88,123 +91,10 @@ class ProductResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
-
-                // ── Harga & Spesifikasi ──────────────────────────────────────
-                Forms\Components\Section::make('Harga & Spesifikasi')
-                    ->icon('heroicon-o-banknotes')
-                    ->schema([
-                        Forms\Components\TextInput::make('base_price')
-                            ->label('Harga Dasar')
-                            ->required()
-                            ->numeric()
-                            ->minValue(0)
-                            ->prefix('Rp')
-                            ->step(500)
-                            ->helperText('Harga sebelum modifier opsi diterapkan.'),
-
-                        Forms\Components\TextInput::make('unit')
-                            ->label('Satuan')
-                            ->required()
-                            ->maxLength(30)
-                            ->placeholder('lembar, pcs, meter, set')
-                            ->helperText('Contoh: lembar, pcs, meter'),
-
-                        Forms\Components\TextInput::make('min_qty')
-                            ->label('Minimum Quantity')
-                            ->required()
-                            ->numeric()
-                            ->integer()
-                            ->minValue(1)
-                            ->default(1)
-                            ->suffix(fn (Forms\Get $get): string => $get('unit') ?: 'pcs'),
-
-                        Forms\Components\TextInput::make('weight_per_unit')
-                            ->label('Berat per Satuan (gram)')
-                            ->numeric()
-                            ->nullable()
-                            ->minValue(0)
-                            ->step(1)
-                            ->suffix('gram')
-                            ->placeholder('Opsional'),
-                    ])
-                    ->columns(2),
-
-                // ── Opsi Produk (Repeater) ───────────────────────────────────
-                Forms\Components\Section::make('Opsi & Spesifikasi Produk')
-                    ->icon('heroicon-o-adjustments-horizontal')
-                    ->description('Tambahkan variasi seperti Ukuran, Bahan, Laminasi, dll.')
-                    ->schema([
-                        Forms\Components\Repeater::make('options')
-                            ->label('')
-                            ->relationship('options')
-                            ->schema([
-                                Forms\Components\TextInput::make('group_name')
-                                    ->label('Grup')
-                                    ->required()
-                                    ->maxLength(50)
-                                    ->placeholder('Ukuran, Bahan, Laminasi...')
-                                    ->datalist([
-                                        'Ukuran', 'Bahan / Kertas', 'Laminasi',
-                                        'Finishing', 'Warna Cetak', 'Ketebalan',
-                                    ])
-                                    ->columnSpan(2),
-
-                                Forms\Components\TextInput::make('option_name')
-                                    ->label('Nama Opsi')
-                                    ->required()
-                                    ->maxLength(100)
-                                    ->placeholder('A4, Art Paper 260gsm, Glossy...')
-                                    ->columnSpan(2),
-
-                                Forms\Components\TextInput::make('price_modifier')
-                                    ->label('Modifier Harga')
-                                    ->required()
-                                    ->numeric()
-                                    ->default(0)
-                                    ->step(100)
-                                    ->prefix(fn (Forms\Get $get): string =>
-                                        $get('modifier_type') === 'percentage' ? '%' : 'Rp'
-                                    )
-                                    ->helperText('Negatif untuk diskon.'),
-
-                                Forms\Components\Select::make('modifier_type')
-                                    ->label('Tipe Modifier')
-                                    ->options([
-                                        'fixed'      => 'Nominal Tetap (Rp)',
-                                        'percentage' => 'Persentase (%)',
-                                    ])
-                                    ->default('fixed')
-                                    ->required()
-                                    ->native(false),
-
-                                Forms\Components\TextInput::make('sort_order')
-                                    ->label('Urutan')
-                                    ->numeric()
-                                    ->integer()
-                                    ->default(0)
-                                    ->minValue(0),
-
-                                Forms\Components\Toggle::make('is_default')
-                                    ->label('Default')
-                                    ->helperText('Dipilih otomatis saat order.')
-                                    ->inline(false),
-                            ])
-                            ->columns(8)
-                            ->columnSpanFull()
-                            ->addActionLabel('+ Tambah Opsi')
-                            ->reorderable('sort_order')
-                            ->collapsible()
-                            ->cloneable()
-                            ->itemLabel(fn (array $state): string =>
-                                ($state['group_name'] ?? '—') . ': ' . ($state['option_name'] ?? '—')
-                            ),
-                    ]),
-
             ])->columnSpan(2),
 
             // ── Kolom Kanan: Gambar & Setting ────────────────────────────────
             Forms\Components\Group::make()->schema([
-
                 Forms\Components\Section::make('Thumbnail Produk')
                     ->icon('heroicon-o-photo')
                     ->schema([
@@ -236,13 +126,126 @@ class ProductResource extends Resource
                             ->label('Urutan Tampil')
                             ->numeric()
                             ->integer()
-                            ->default(0)
+                            ->default(fn () => (\App\Models\Product::max('sort_order') ?? -1) + 1)
                             ->minValue(0)
-                            ->helperText('Lebih kecil = lebih atas. 0 = paling atas.'),
+                            ->helperText('Otomatis ditentukan (Hanya Baca). Gunakan drag & drop di tabel untuk mengubah urutan.')
+                            ->disabled()
+                            ->dehydrated(),
                     ]),
-
             ])->columnSpan(1),
 
+            // ── Harga & Spesifikasi (Lebar Penuh) ────────────────────────────
+            Forms\Components\Section::make('Harga & Spesifikasi')
+                ->icon('heroicon-o-banknotes')
+                ->schema([
+                    Forms\Components\TextInput::make('base_price')
+                        ->label('Harga Dasar')
+                        ->required()
+                        ->numeric()
+                        ->minValue(0)
+                        ->prefix('Rp')
+                        ->step(500)
+                        ->helperText('Harga sebelum modifier opsi diterapkan.'),
+
+                    Forms\Components\TextInput::make('unit')
+                        ->label('Satuan')
+                        ->required()
+                        ->maxLength(30)
+                        ->placeholder('lembar, pcs, meter, set')
+                        ->helperText('Contoh: lembar, pcs, meter'),
+
+                    Forms\Components\TextInput::make('min_qty')
+                        ->label('Minimum Quantity')
+                        ->required()
+                        ->numeric()
+                        ->integer()
+                        ->minValue(1)
+                        ->default(1)
+                        ->suffix(fn (Forms\Get $get): string => $get('unit') ?: 'pcs'),
+
+                    Forms\Components\TextInput::make('weight_per_unit')
+                        ->label('Berat per Satuan (gram)')
+                        ->numeric()
+                        ->nullable()
+                        ->minValue(0)
+                        ->step(1)
+                        ->suffix('gram')
+                        ->placeholder('Opsional'),
+                ])
+                ->columns(2)
+                ->columnSpanFull(),
+
+            // ── Opsi Produk (Repeater - Lebar Penuh) ─────────────────────────
+            Forms\Components\Section::make('Opsi & Spesifikasi Produk')
+                ->icon('heroicon-o-adjustments-horizontal')
+                ->description('Tambahkan variasi seperti Ukuran, Bahan, Laminasi, dll.')
+                ->schema([
+                    Forms\Components\Repeater::make('options')
+                        ->label('')
+                        ->relationship('options')
+                        ->schema([
+                            Forms\Components\TextInput::make('group_name')
+                                ->label('Grup')
+                                ->required()
+                                ->maxLength(50)
+                                ->placeholder('Ukuran, Bahan, Laminasi...')
+                                ->datalist([
+                                    'Ukuran', 'Bahan / Kertas', 'Laminasi',
+                                    'Finishing', 'Warna Cetak', 'Ketebalan',
+                                ])
+                                ->columnSpan(2),
+
+                            Forms\Components\TextInput::make('option_name')
+                                ->label('Nama Opsi')
+                                ->required()
+                                ->maxLength(100)
+                                ->placeholder('A4, Art Paper 260gsm, Glossy...')
+                                ->columnSpan(2),
+
+                            Forms\Components\TextInput::make('price_modifier')
+                                ->label('Modifier Harga')
+                                ->required()
+                                ->numeric()
+                                ->default(0)
+                                ->step(100)
+                                ->prefix(fn (Forms\Get $get): string =>
+                                    $get('modifier_type') === 'percentage' ? '%' : 'Rp'
+                                )
+                                ->helperText('Negatif untuk diskon.'),
+
+                            Forms\Components\Select::make('modifier_type')
+                                ->label('Tipe Modifier')
+                                ->options([
+                                    'fixed'      => 'Nominal Tetap (Rp)',
+                                    'percentage' => 'Persentase (%)',
+                                ])
+                                ->default('fixed')
+                                ->required()
+                                ->native(false),
+
+                            Forms\Components\TextInput::make('sort_order')
+                                ->label('Urutan')
+                                ->numeric()
+                                ->integer()
+                                ->default(0)
+                                ->minValue(0),
+
+                            Forms\Components\Toggle::make('is_default')
+                                ->label('Default')
+                                ->helperText('Dipilih otomatis saat order.')
+                                ->inline(false),
+                        ])
+                        ->columns(8)
+                        ->columnSpanFull()
+                        ->addActionLabel('+ Tambah Opsi')
+                        ->reorderable('sort_order')
+                        ->collapsible()
+                        ->cloneable()
+                        ->itemLabel(fn (array $state): string =>
+                            ($state['group_name'] ?? '—') . ': ' . ($state['option_name'] ?? '—')
+                        ),
+                ])
+                ->columnSpanFull(),
         ])->columns(3);
     }
 
@@ -308,6 +311,7 @@ class ProductResource extends Resource
             ])
 
             ->defaultSort('sort_order')
+            ->reorderable('sort_order')
 
             ->filters([
                 Tables\Filters\SelectFilter::make('category_id')

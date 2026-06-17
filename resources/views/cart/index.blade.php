@@ -14,7 +14,7 @@
         <h1 class="text-2xl md:text-3xl font-black text-gray-900 mb-6">
             Keranjang Belanja
             @if($items->isNotEmpty())
-                <span class="text-base font-semibold text-gray-400 ml-2">({{ $items->sum('quantity') }} item)</span>
+                <span class="text-base font-semibold text-gray-400 ml-2">({{ $items->count() }} produk)</span>
             @endif
         </h1>
 

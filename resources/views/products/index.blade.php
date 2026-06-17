@@ -76,11 +76,11 @@
                     <select
                         name="sort"
                         onchange="document.getElementById('sort-form').submit()"
-                        class="input text-sm w-full sm:w-48 cursor-pointer"
+                        class="input text-xs sm:text-sm w-full sm:w-48 cursor-pointer px-2 sm:px-4"
                         aria-label="Urutkan produk">
                         <option value="default"     {{ request('sort', 'default') === 'default'    ? 'selected' : '' }}>Relevansi</option>
-                        <option value="price_asc"   {{ request('sort') === 'price_asc'  ? 'selected' : '' }}>Harga: Rendah ke Tinggi</option>
-                        <option value="price_desc"  {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Harga: Tinggi ke Rendah</option>
+                        <option value="price_asc"   {{ request('sort') === 'price_asc'  ? 'selected' : '' }}>Termurah</option>
+                        <option value="price_desc"  {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Termahal</option>
                         <option value="newest"      {{ request('sort') === 'newest'     ? 'selected' : '' }}>Terbaru</option>
                     </select>
                 </form>

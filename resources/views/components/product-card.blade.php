@@ -59,7 +59,7 @@
         @unless($compact)
             @if($product->description)
                 <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
-                    {{ $product->description }}
+                    {{ strip_tags($product->description) }}
                 </p>
             @endif
         @endunless

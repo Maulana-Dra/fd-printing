@@ -18,6 +18,13 @@ Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 
 Route::get('/k/{slug?}', [ProductController::class, 'index'])->name('products.index');
 Route::get('/p/{slug}',  [ProductController::class, 'show'])->name('products.show');
 
+// ── Halaman Informasi (Static Pages) ─────────────────────────────────────────
+Route::view('/cara-pemesanan', 'pages.how-to-order')->name('pages.how-to-order');
+Route::view('/panduan-desain', 'pages.design-guide')->name('pages.design-guide');
+Route::view('/hubungi-kami', 'pages.contact')->name('pages.contact');
+Route::view('/kebijakan-privasi', 'pages.privacy')->name('pages.privacy');
+Route::view('/syarat-ketentuan', 'pages.terms')->name('pages.terms');
+
 // ── Keranjang (guest + auth) ──────────────────────────────────────────────────
 Route::get('/cart',            [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])

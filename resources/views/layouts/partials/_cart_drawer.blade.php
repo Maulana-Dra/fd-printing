@@ -29,7 +29,7 @@
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
                 <h2 class="text-base font-bold text-gray-900">Keranjang</h2>
-                <span class="badge-primary text-xs" x-text="`${$store.cart.count} item`"></span>
+                <span class="badge-primary text-xs" x-text="`${$store.cart.count} produk`"></span>
             </div>
             <button @click="$store.ui.closeCart()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,29 +65,29 @@
                         {{-- Thumbnail --}}
                         <div class="w-16 h-16 rounded-lg bg-white border border-gray-200 flex-shrink-0 overflow-hidden">
                             <img
-                                :src="item.thumbnail || 'https://placehold.co/64x64/f97316/ffffff?text=P'"
-                                :alt="item.name"
+                                :src="item.product_thumbnail || 'https://placehold.co/64x64/f97316/ffffff?text=P'"
+                                :alt="item.product_name"
                                 class="w-full h-full object-cover"
                             >
                         </div>
 
                         {{-- Info --}}
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 line-clamp-1" x-text="item.name"></p>
-                            <p class="text-xs text-gray-500 mt-0.5 line-clamp-1" x-text="item.options ? Object.values(item.options).join(' · ') : ''"></p>
+                            <p class="text-sm font-semibold text-gray-900 line-clamp-1" x-text="item.product_name"></p>
+                            <p class="text-xs text-gray-500 mt-0.5 line-clamp-1" x-text="item.selected_options ? item.selected_options.map(o => o.option_name).filter(Boolean).join(' · ') : ''"></p>
                             <div class="flex items-center justify-between mt-2">
                                 {{-- Qty Controls --}}
                                 <div class="flex items-center gap-1.5">
                                     <button
-                                        @click="$store.cart.updateQty(index, item.qty - 1)"
+                                        @click="$store.cart.updateQty(item.id, item.quantity - 1)"
                                         class="w-6 h-6 rounded-md border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center text-gray-600 transition-colors">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
                                         </svg>
                                     </button>
-                                    <span class="w-7 text-center text-sm font-semibold text-gray-900" x-text="item.qty"></span>
+                                    <span class="w-7 text-center text-sm font-semibold text-gray-900" x-text="item.quantity"></span>
                                     <button
-                                        @click="$store.cart.updateQty(index, item.qty + 1)"
+                                        @click="$store.cart.updateQty(item.id, item.quantity + 1)"
                                         class="w-6 h-6 rounded-md border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center text-gray-600 transition-colors">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
@@ -98,8 +98,8 @@
                                 {{-- Price & Delete --}}
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm font-bold text-orange-600"
-                                        x-text="'Rp ' + (item.price * item.qty).toLocaleString('id-ID')"></span>
-                                    <button @click="$store.cart.remove(index)"
+                                        x-text="'Rp ' + (item.unit_price * item.quantity).toLocaleString('id-ID')"></span>
+                                    <button @click="$store.cart.remove(item.id)"
                                         class="p-1 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>

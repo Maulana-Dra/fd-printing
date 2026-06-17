@@ -50,8 +50,10 @@ class CategoryResource extends Resource
                             ->required()
                             ->maxLength(100)
                             ->unique(Category::class, 'slug', ignoreRecord: true)
-                            ->helperText('Otomatis dari nama. Digunakan sebagai URL: /k/{slug}')
-                            ->prefix('k/'),
+                            ->helperText('Otomatis dari nama (Hanya Baca).')
+                            ->prefix('k/')
+                            ->disabled()
+                            ->dehydrated(),
 
                         Forms\Components\Textarea::make('description')
                             ->label('Deskripsi')
@@ -98,9 +100,11 @@ class CategoryResource extends Resource
                             ->label('Urutan Tampil')
                             ->numeric()
                             ->integer()
-                            ->default(0)
+                            ->default(fn () => (\App\Models\Category::max('sort_order') ?? -1) + 1)
                             ->minValue(0)
-                            ->helperText('Lebih kecil = lebih atas.'),
+                            ->helperText('Otomatis ditentukan (Hanya Baca). Gunakan drag & drop di tabel untuk mengubah urutan.')
+                            ->disabled()
+                            ->dehydrated(),
                     ]),
 
             ])->columnSpan(1),
@@ -156,6 +160,7 @@ class CategoryResource extends Resource
             ])
 
             ->defaultSort('sort_order')
+            ->reorderable('sort_order')
 
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
