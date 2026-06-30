@@ -73,9 +73,7 @@
                         <div class="flex flex-wrap gap-3">
                             <a href="{{ $slide['cta_url'] }}" class="btn-primary text-base px-6 py-3 shadow-lg shadow-orange-900/30">
                                 {{ $slide['cta_label'] }}
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                                </svg>
+                                <x-heroicon-o-arrow-right class="w-4 h-4 stroke-[2.5]" />
                             </a>
                             <a href="{{ $slide['cta2_url'] }}"
                                 class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-semibold
@@ -109,17 +107,13 @@
                             class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20
                                    flex items-center justify-center text-white transition-all duration-150"
                             aria-label="Slide sebelumnya">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-                            </svg>
+                            <x-heroicon-o-chevron-left class="w-4 h-4 stroke-[2.5]" />
                         </button>
                         <button @click="next()"
                             class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20
                                    flex items-center justify-center text-white transition-all duration-150"
                             aria-label="Slide berikutnya">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-                            </svg>
+                            <x-heroicon-o-chevron-right class="w-4 h-4 stroke-[2.5]" />
                         </button>
                     </div>
                 </div>
@@ -153,9 +147,7 @@
             </div>
             <a href="{{ route('products.index') }}" class="btn-ghost text-sm text-orange-600 hidden sm:flex">
                 Lihat Semua
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
+                <x-heroicon-o-chevron-right class="w-4 h-4" />
             </a>
         </div>
 
@@ -167,21 +159,12 @@
                 3 => 'from-purple-500 to-violet-600',
                 4 => 'from-pink-500 to-rose-600',
             ];
-
-            $categoryIcons = [
-                'heroicon-o-star'         => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>',
-                'heroicon-o-printer'      => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>',
-                'heroicon-o-megaphone'    => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>',
-                'heroicon-o-shopping-bag' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>',
-                'heroicon-o-gift'         => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>',
-            ];
         @endphp
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
             @foreach($categories as $i => $category)
                 @php
                     $gradient = $categoryGradients[$i % 5];
-                    $iconPath = $categoryIcons[$category->icon] ?? $categoryIcons['heroicon-o-printer'];
                 @endphp
                 <a
                     href="{{ route('products.index', $category->slug) }}"
@@ -192,10 +175,7 @@
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br {{ $gradient }}
                                 flex items-center justify-center shadow-md
                                 group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {{-- strip_tags: hanya izinkan elemen SVG aman (path, circle, rect, polyline, polygon, line) --}}
-                        {!! strip_tags($iconPath, '<path><circle><rect><polyline><polygon><line><ellipse>') !!}
-                        </svg>
+                        <x-dynamic-component :component="$category->icon ?? 'heroicon-o-printer'" class="w-7 h-7 text-white" />
                     </div>
 
                     {{-- Label --}}
@@ -213,9 +193,7 @@
 
         <a href="{{ route('products.index') }}" class="btn-ghost text-sm text-orange-600 sm:hidden w-full justify-center mt-4">
             Lihat Semua Kategori
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
+            <x-heroicon-o-chevron-right class="w-4 h-4" />
         </a>
     </section>
 
@@ -227,16 +205,14 @@
         <div class="container-app py-10 md:py-12">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center text-white">
                 @foreach([
-                    ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Kualitas Terjamin', 'desc' => 'Bahan premium, hasil memuaskan'],
-                    ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Pengerjaan Cepat', 'desc' => '1–3 hari kerja siap kirim'],
-                    ['icon' => 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z', 'title' => 'Konsultasi Gratis', 'desc' => 'Tim siap bantu via WhatsApp'],
-                    ['icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Harga Kompetitif', 'desc' => 'Harga terbaik, tanpa biaya tersembunyi'],
+                    ['icon' => 'heroicon-o-check-circle', 'title' => 'Kualitas Terjamin', 'desc' => 'Bahan premium, hasil memuaskan'],
+                    ['icon' => 'heroicon-o-clock', 'title' => 'Pengerjaan Cepat', 'desc' => '1–3 hari kerja siap kirim'],
+                    ['icon' => 'heroicon-o-phone', 'title' => 'Konsultasi Gratis', 'desc' => 'Tim siap bantu via WhatsApp'],
+                    ['icon' => 'heroicon-o-currency-dollar', 'title' => 'Harga Kompetitif', 'desc' => 'Harga terbaik, tanpa biaya tersembunyi'],
                 ] as $usp)
                     <div class="flex flex-col items-center gap-3">
                         <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $usp['icon'] }}"/>
-                            </svg>
+                            <x-dynamic-component :component="$usp['icon']" class="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <p class="font-bold text-sm">{{ $usp['title'] }}</p>
@@ -274,9 +250,7 @@
                     <a href="{{ route('products.index', $category->slug) }}"
                         class="flex-shrink-0 btn-ghost text-sm text-orange-600">
                         Lihat Semua
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
+                        <x-heroicon-o-chevron-right class="w-4 h-4" />
                     </a>
                 </div>
 
@@ -311,9 +285,7 @@
                     <a href="{{ route('products.index', $category->slug) }}"
                         class="btn-secondary text-sm">
                         Lihat Semua {{ $category->name }}
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
+                        <x-heroicon-o-chevron-right class="w-4 h-4" />
                     </a>
                 </div>
             </section>
@@ -357,9 +329,7 @@
                         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white
                                border border-white/20 hover:bg-white/10 transition-all duration-200">
                         Lihat Produk
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
+                        <x-heroicon-o-chevron-right class="w-4 h-4" />
                     </a>
                 </div>
             </div>
@@ -387,10 +357,7 @@
                             {{-- Alamat --}}
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
+                                    <x-heroicon-o-map-pin class="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Alamat Utama</p>
@@ -403,9 +370,7 @@
                             {{-- Jam Operasional --}}
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
+                                    <x-heroicon-o-clock class="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Jam Operasional</p>
@@ -419,9 +384,7 @@
                             {{-- Kontak --}}
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                                    </svg>
+                                    <x-heroicon-o-phone class="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Hubungi Kami</p>
@@ -440,9 +403,7 @@
                            target="_blank" rel="noopener"
                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition duration-150 shadow-md shadow-orange-500/20">
                             Petunjuk Arah (Google Maps)
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 00-2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
+                            <x-heroicon-o-arrow-top-right-on-square class="w-4 h-4" />
                         </a>
                     </div>
                 </div>
@@ -464,9 +425,7 @@
                            target="_blank" rel="noopener"
                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl transition duration-150">
                             Buka Penunjuk Arah
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 00-2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                            </svg>
+                            <x-heroicon-o-arrow-top-right-on-square class="w-4 h-4" />
                         </a>
                     </div>
                 </div>

@@ -25,10 +25,7 @@
             <form action="{{ route('products.index') }}" method="GET"
                 class="hidden md:flex flex-1 max-w-xl mx-auto">
                 <div class="search-bar w-full">
-                    <svg class="w-6 h-6 text-gray-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
+                    <x-heroicon-o-magnifying-glass class="w-6 h-6 text-gray-700 flex-shrink-0" />
                     <input
                         type="text"
                         name="q"
@@ -51,10 +48,7 @@
                     @click="$store.ui.searchFocused = !$store.ui.searchFocused"
                     class="md:hidden btn-ghost p-2.5 tap-highlight"
                     aria-label="Buka pencarian">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
+                    <x-heroicon-o-magnifying-glass class="w-5 h-5" />
                 </button>
 
                 {{-- Cart Button --}}
@@ -62,10 +56,7 @@
                     @click="$store.ui.toggleCart()"
                     class="relative btn-ghost p-2.5 tap-highlight"
                     aria-label="Keranjang belanja">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
+                    <x-heroicon-o-shopping-cart class="w-5 h-5" />
                     {{-- Badge --}}
                     <span
                         x-show="$store.cart.count > 0"
@@ -92,10 +83,7 @@
                                 </span>
                             </div>
                         @else
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
+                            <x-heroicon-o-user class="w-5 h-5" />
                         @endauth
                     </button>
 
@@ -122,26 +110,17 @@
                             <div class="py-1">
                                 <a href="{{ route('dashboard') }}"
                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                                    </svg>
+                                    <x-heroicon-o-home class="w-4 h-4" />
                                     Dashboard
                                 </a>
                                 <a href="{{ route('orders.index') }}"
                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                                    </svg>
+                                    <x-heroicon-o-clipboard-document-list class="w-4 h-4" />
                                     Pesanan Saya
                                 </a>
                                 <a href="{{ route('profile.edit') }}"
                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                    </svg>
+                                    <x-heroicon-o-user class="w-4 h-4" />
                                     Profil Saya
                                 </a>
                             </div>
@@ -151,10 +130,7 @@
                                     @csrf
                                     <button type="submit"
                                         class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                                        </svg>
+                                        <x-heroicon-o-arrow-left-on-rectangle class="w-4 h-4" />
                                         Keluar
                                     </button>
                                 </form>
@@ -163,18 +139,12 @@
                             <div class="py-1">
                                 <a href="{{ route('login') }}"
                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                                    </svg>
+                                    <x-heroicon-o-arrow-right-on-rectangle class="w-4 h-4" />
                                     Masuk
                                 </a>
                                 <a href="{{ route('register') }}"
                                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-                                    </svg>
+                                    <x-heroicon-o-user-plus class="w-4 h-4" />
                                     Daftar
                                 </a>
                             </div>
@@ -187,12 +157,8 @@
                     @click="$store.ui.toggleMenu()"
                     class="md:hidden btn-ghost p-2.5 tap-highlight"
                     aria-label="Menu navigasi">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            :d="$store.ui.mobileMenuOpen
-                                ? 'M6 18L18 6M6 6l12 12'
-                                : 'M4 6h16M4 12h16M4 18h16'"/>
-                    </svg>
+                    <x-heroicon-o-x-mark x-show="$store.ui.mobileMenuOpen" class="w-5 h-5" />
+                    <x-heroicon-o-bars-3 x-show="!$store.ui.mobileMenuOpen" class="w-5 h-5" />
                 </button>
             </div>
         </div>
@@ -210,10 +176,7 @@
             class="md:hidden pb-3">
             <form action="{{ route('products.index') }}" method="GET">
                 <div class="search-bar w-full">
-                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
+                    <x-heroicon-o-magnifying-glass class="w-4 h-4 text-gray-400 flex-shrink-0" />
                     <input type="text" name="q" value="{{ request('q') }}"
                         placeholder="Cari produk percetakan..."
                         x-ref="mobileSearch"
@@ -221,9 +184,7 @@
                         autofocus>
                     <button type="button" @click="$store.ui.searchFocused = false"
                         class="text-gray-400 hover:text-gray-600 p-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
+                        <x-heroicon-o-x-mark class="w-4 h-4" />
                     </button>
                 </div>
             </form>
@@ -279,9 +240,7 @@
                      class="h-9 w-auto object-contain">
             </div>
             <button @click="$store.ui.closeMobileMenu()" class="p-2 rounded-lg hover:bg-gray-100">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
+                <x-heroicon-o-x-mark class="w-5 h-5 text-gray-500" />
             </button>
         </div>
 
@@ -292,9 +251,7 @@
                 <a href="{{ route('products.index') }}"
                     @click="$store.ui.closeMobileMenu()"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                    </svg>
+                    <x-heroicon-o-bars-4 class="w-4 h-4" />
                     Semua Produk
                 </a>
                 @foreach(\App\Models\Category::active()->sorted()->get() as $cat)
@@ -302,14 +259,7 @@
                         @click="$store.ui.closeMobileMenu()"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
                         <span class="w-4 h-4 flex items-center justify-center text-gray-400">
-                            @switch($cat->icon)
-                                @case('heroicon-o-star') @break
-                                @case('heroicon-o-printer') @break
-                                @case('heroicon-o-megaphone') @break
-                                @case('heroicon-o-shopping-bag') @break
-                                @case('heroicon-o-gift') @break
-                                @default ▸
-                            @endswitch
+                            <x-dynamic-component :component="$cat->icon ?? 'heroicon-o-printer'" class="w-4 h-4" />
                         </span>
                         {{ $cat->name }}
                     </a>
@@ -332,10 +282,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full btn-ghost text-red-600 hover:bg-red-50 justify-start">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
+                        <x-heroicon-o-arrow-left-on-rectangle class="w-4 h-4" />
                         Keluar
                     </button>
                 </form>

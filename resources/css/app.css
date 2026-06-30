@@ -19,8 +19,8 @@
     html { scroll-behavior: smooth; }
 
     body {
-        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-        background-image: linear-gradient(rgba(249, 250, 251, 0.5), rgba(249, 250, 251, 0.5)), url('/assets/bgGambar.png');
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; 
+        background-image: linear-gradient(rgba(249, 250, 251, 0.8), rgba(249, 250, 251, 0.8)), url('/assets/bgGambar.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-attachment: fixed;

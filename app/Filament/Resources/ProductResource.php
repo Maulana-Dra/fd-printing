@@ -193,14 +193,38 @@ class ProductResource extends Resource
                                     'Ukuran', 'Bahan / Kertas', 'Laminasi',
                                     'Finishing', 'Warna Cetak', 'Ketebalan',
                                 ])
-                                ->columnSpan(2),
+                                ->columnSpan(4),
 
                             Forms\Components\TextInput::make('option_name')
                                 ->label('Nama Opsi')
                                 ->required()
                                 ->maxLength(100)
                                 ->placeholder('A4, Art Paper 260gsm, Glossy...')
+                                ->columnSpan(4),
+
+                            Forms\Components\TextInput::make('sort_order')
+                                ->label('Urutan')
+                                ->numeric()
+                                ->integer()
+                                ->default(0)
+                                ->minValue(0)
                                 ->columnSpan(2),
+
+                            Forms\Components\Toggle::make('is_default')
+                                ->label('Pilihan Default')
+                                ->helperText('Dipilih otomatis saat order.')
+                                ->inline(false)
+                                ->columnSpan(2),
+
+                            Forms\Components\Select::make('modifier_type')
+                                ->label('Tipe Modifier Harga')
+                                ->options([
+                                    'fixed'      => 'Nominal Tetap (Rp)',
+                                ])
+                                ->default('fixed')
+                                ->columnSpan(4)
+                                ->native(false)
+                                ->required(),
 
                             Forms\Components\TextInput::make('price_modifier')
                                 ->label('Modifier Harga')
@@ -208,37 +232,15 @@ class ProductResource extends Resource
                                 ->numeric()
                                 ->default(0)
                                 ->step(100)
-                                ->prefix(fn (Forms\Get $get): string =>
-                                    $get('modifier_type') === 'percentage' ? '%' : 'Rp'
-                                )
-                                ->helperText('Negatif untuk diskon.'),
-
-                            Forms\Components\Select::make('modifier_type')
-                                ->label('Tipe Modifier')
-                                ->options([
-                                    'fixed'      => 'Nominal Tetap (Rp)',
-                                    'percentage' => 'Persentase (%)',
-                                ])
-                                ->default('fixed')
-                                ->required()
-                                ->native(false),
-
-                            Forms\Components\TextInput::make('sort_order')
-                                ->label('Urutan')
-                                ->numeric()
-                                ->integer()
-                                ->default(0)
-                                ->minValue(0),
-
-                            Forms\Components\Toggle::make('is_default')
-                                ->label('Default')
-                                ->helperText('Dipilih otomatis saat order.')
-                                ->inline(false),
+                                ->prefix('Rp')
+                                ->helperText('Gunakan tanda minus (-) untuk memberikan diskon/potongan harga.')
+                                ->columnSpan(8),
                         ])
-                        ->columns(8)
+                        ->columns(12)
                         ->columnSpanFull()
                         ->addActionLabel('+ Tambah Opsi')
-                        ->reorderable('sort_order')
+                        ->reorderable()
+                        ->orderColumn('sort_order')
                         ->collapsible()
                         ->cloneable()
                         ->itemLabel(fn (array $state): string =>

@@ -24,17 +24,12 @@
         {{-- Header Drawer --}}
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
+                <x-heroicon-o-shopping-cart class="w-5 h-5 text-orange-600" />
                 <h2 class="text-base font-bold text-gray-900">Keranjang</h2>
                 <span class="badge-primary text-xs" x-text="`${$store.cart.count} produk`"></span>
             </div>
             <button @click="$store.ui.closeCart()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
+                <x-heroicon-o-x-mark class="w-5 h-5 text-gray-500" />
             </button>
         </div>
 
@@ -45,10 +40,7 @@
                 x-show="$store.cart.count === 0"
                 class="flex flex-col items-center justify-center h-full text-center p-8">
                 <div class="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
-                    <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
+                    <x-heroicon-o-shopping-cart class="w-10 h-10 text-gray-300" />
                 </div>
                 <p class="text-gray-900 font-semibold mb-1">Keranjang Kosong</p>
                 <p class="text-gray-500 text-sm mb-6">Belum ada produk di keranjang Anda</p>
@@ -81,17 +73,13 @@
                                     <button
                                         @click="$store.cart.updateQty(item.id, item.quantity - 1)"
                                         class="w-6 h-6 rounded-md border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center text-gray-600 transition-colors">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
-                                        </svg>
+                                        <x-heroicon-o-minus class="w-3 h-3" />
                                     </button>
                                     <span class="w-7 text-center text-sm font-semibold text-gray-900" x-text="item.quantity"></span>
                                     <button
                                         @click="$store.cart.updateQty(item.id, item.quantity + 1)"
                                         class="w-6 h-6 rounded-md border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center text-gray-600 transition-colors">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                                        </svg>
+                                        <x-heroicon-o-plus class="w-3 h-3" />
                                     </button>
                                 </div>
 
@@ -101,9 +89,7 @@
                                         x-text="'Rp ' + (item.unit_price * item.quantity).toLocaleString('id-ID')"></span>
                                     <button @click="$store.cart.remove(item.id)"
                                         class="p-1 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                        </svg>
+                                        <x-heroicon-o-trash class="w-3.5 h-3.5" />
                                     </button>
                                 </div>
                             </div>

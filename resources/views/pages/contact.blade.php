@@ -6,9 +6,7 @@
         {{-- Breadcrumb --}}
         <nav class="flex items-center gap-2 text-xs text-gray-500 mb-6" aria-label="Breadcrumb">
             <a href="{{ route('home') }}" class="hover:text-orange-600 transition-colors">Beranda</a>
-            <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
+            <x-heroicon-o-chevron-right class="w-3 h-3 text-gray-300" />
             <span class="text-gray-900 font-medium">Hubungi Kami</span>
         </nav>
 
@@ -26,10 +24,7 @@
                             {{-- Alamat --}}
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
+                                    <x-heroicon-o-map-pin class="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Alamat Workshop</p>
@@ -42,9 +37,7 @@
                             {{-- Jam Operasional --}}
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
+                                    <x-heroicon-o-clock class="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Jam Operasional</p>
@@ -58,9 +51,7 @@
                             {{-- Kontak --}}
                             <div class="flex items-start gap-4">
                                 <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                                    </svg>
+                                    <x-heroicon-o-phone class="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Hubungi Kami</p>

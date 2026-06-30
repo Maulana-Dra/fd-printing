@@ -6,9 +6,7 @@
         {{-- Breadcrumb --}}
         <nav class="flex items-center gap-2 text-xs text-gray-500 mb-6" aria-label="Breadcrumb">
             <a href="{{ route('home') }}" class="hover:text-orange-600 transition-colors">Beranda</a>
-            <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
+            <x-heroicon-o-chevron-right class="w-3 h-3 text-gray-300" />
             <span class="text-gray-900 font-medium">Panduan Upload Desain</span>
         </nav>
 
