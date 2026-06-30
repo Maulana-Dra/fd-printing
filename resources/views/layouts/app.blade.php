@@ -27,7 +27,7 @@
     @stack('head')
 </head>
 
-<body class="tap-highlight min-h-screen bg-gray-50" x-data>
+<body class="tap-highlight min-h-screen" x-data>
 
     {{-- ── Toasts ────────────────────────────────────────────────── --}}
     @include('layouts.partials._toast')
